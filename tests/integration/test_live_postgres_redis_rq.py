@@ -11,10 +11,10 @@ import uuid
 from pathlib import Path
 
 import pytest
-from alembic import command
 from alembic.config import Config
 from sqlalchemy import select
 
+from alembic import command
 from argumentum.server.db import get_engine, get_session_factory
 from argumentum.server.db_models import ResearchJob, Tenant
 from argumentum.server.queueing import enqueue_research_run, new_rq_job_id
