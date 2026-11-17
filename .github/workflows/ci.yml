@@ -38,6 +38,8 @@ jobs:
           fi
 
   test:
+    needs: format-on-main
+    if: always() && (needs.format-on-main.result == 'success' || needs.format-on-main.result == 'skipped')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -45,6 +47,8 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -63,6 +67,8 @@ jobs:
         run: python scripts/check-ui-js.py
 
   framework-adapters:
+    needs: format-on-main
+    if: always() && (needs.format-on-main.result == 'success' || needs.format-on-main.result == 'skipped')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -73,6 +79,8 @@ jobs:
           - extra: microsoft-agent-framework
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -83,6 +91,8 @@ jobs:
         run: python -m pytest tests/test_harnesses.py tests/test_workflow_harnesses.py -vv
 
   live-postgres-redis-rq:
+    needs: format-on-main
+    if: always() && (needs.format-on-main.result == 'success' || needs.format-on-main.result == 'skipped')
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -115,6 +125,8 @@ jobs:
       ARGUMENTUM_TIMEOUT_SECONDS: "30"
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -125,9 +137,13 @@ jobs:
         run: python -m pytest tests/integration/test_live_postgres_redis_rq.py -vv
 
   self-hosted-config:
+    needs: format-on-main
+    if: always() && (needs.format-on-main.result == 'success' || needs.format-on-main.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -147,10 +163,14 @@ jobs:
         run: docker build --file Dockerfile.sandbox --tag argumentum-sandbox:ci .
 
   docker-compose-smoke:
+    needs: format-on-main
+    if: always() && (needs.format-on-main.result == 'success' || needs.format-on-main.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
