@@ -22,7 +22,7 @@ class Settings:
     pipeline_harness: str = "native"
 
     @classmethod
-    def from_env(cls) -> "Settings":
+    def from_env(cls) -> Settings:
         return cls(
             base_url=os.getenv("ARGUMENTUM_LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/"),
             api_key=os.getenv("ARGUMENTUM_LLM_API_KEY") or os.getenv("OPENAI_API_KEY"),

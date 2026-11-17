@@ -8,8 +8,9 @@ shadow agents or change the scientific protocol.
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, Never, Protocol
+from typing import Any, Never, Protocol
 
 
 @dataclass(frozen=True)
@@ -52,7 +53,10 @@ class LangGraphPipelineHarness:
         graph = StateGraph(PipelineState)
         node_names = [f"stage_{index:02d}_{stage.name}" for index, stage in enumerate(stages)]
         for node_name, stage in zip(node_names, stages, strict=True):
-            def execute_stage(current: PipelineState, action: Callable[[dict[str, Any]], None] = stage.action) -> dict[str, Any]:
+
+            def execute_stage(
+                current: PipelineState, action: Callable[[dict[str, Any]], None] = stage.action
+            ) -> dict[str, Any]:
                 action(current["payload"])
                 return {"payload": current["payload"]}
 
@@ -124,8 +128,7 @@ class MicrosoftAgentFrameworkPipelineHarness:
             from agent_framework import WorkflowBuilder, WorkflowContext, executor
         except ImportError as exc:
             raise RuntimeError(
-                "Microsoft Agent Framework pipeline requested; install "
-                "`argumentum-research[microsoft-agent-framework]`"
+                "Microsoft Agent Framework pipeline requested; install `argumentum-research[microsoft-agent-framework]`"
             ) from exc
 
         executors: list[Any] = []
@@ -134,6 +137,7 @@ class MicrosoftAgentFrameworkPipelineHarness:
 
             def make_executor(action: Callable[[dict[str, Any]], None], terminal: bool, name: str) -> Any:
                 if terminal:
+
                     @executor(id=name)
                     async def execute_terminal(
                         payload: dict[str, Any], context: WorkflowContext[Never, dict[str, Any]]
@@ -144,9 +148,7 @@ class MicrosoftAgentFrameworkPipelineHarness:
                     return execute_terminal
 
                 @executor(id=name)
-                async def execute_stage(
-                    payload: dict[str, Any], context: WorkflowContext[dict[str, Any]]
-                ) -> None:
+                async def execute_stage(payload: dict[str, Any], context: WorkflowContext[dict[str, Any]]) -> None:
                     action(payload)
                     await context.send_message(payload)
 

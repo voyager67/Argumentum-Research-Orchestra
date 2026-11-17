@@ -30,10 +30,14 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--topic", required=True, help="Research topic")
     run.add_argument("--question", required=True, help="Primary research question")
     run.add_argument("--discipline", default="Interdisciplinary")
-    run.add_argument("--study-type", default="auto", help="Examples: empirical, review, theoretical, design science, auto")
+    run.add_argument(
+        "--study-type", default="auto", help="Examples: empirical, review, theoretical, design science, auto"
+    )
     run.add_argument("--audience", default="graduate researchers")
     run.add_argument("--source-limit", type=int, default=24)
-    run.add_argument("--input-dir", type=Path, help="Directory of research notes, PDFs, CSVs, or other supported materials")
+    run.add_argument(
+        "--input-dir", type=Path, help="Directory of research notes, PDFs, CSVs, or other supported materials"
+    )
     run.add_argument("--output-dir", type=Path, default=Path("argumentum-output"))
     run.add_argument("--query", action="append", default=[], help="Additional literature query; may be repeated")
     run.add_argument("--demo", action="store_true", help="Run offline with clearly fictional fixture sources")
@@ -47,8 +51,12 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--run-dir", type=Path, required=True, help="Existing Argumentum run directory")
 
     subparsers.add_parser("audit-help", help="Explain deterministic integrity checks")
-    benchmark = subparsers.add_parser("benchmark-retrieval", help="Evaluate retrieval against a researcher-labelled JSONL gold set")
-    benchmark.add_argument("--input", type=Path, required=True, help="JSONL with query_id, retrieved_ids and relevant_ids")
+    benchmark = subparsers.add_parser(
+        "benchmark-retrieval", help="Evaluate retrieval against a researcher-labelled JSONL gold set"
+    )
+    benchmark.add_argument(
+        "--input", type=Path, required=True, help="JSONL with query_id, retrieved_ids and relevant_ids"
+    )
     benchmark.add_argument("--k", type=int, default=5, help="Cutoff for ranking metrics (1-100)")
     benchmark.add_argument("--output", type=Path, help="Optional JSON output path; stdout is used by default")
     return parser
@@ -108,7 +116,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "doctor":
         result = _doctor(settings)
-        print(json.dumps(result, indent=2) if args.json else "\n".join(f"{key}: {value}" for key, value in result.items()))
+        print(
+            json.dumps(result, indent=2) if args.json else "\n".join(f"{key}: {value}" for key, value in result.items())
+        )
         return 0
 
     if args.command == "agents":
@@ -145,7 +155,9 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     if args.command == "audit-help":
-        print("Argumentum deterministically checks citation-ID resolution, presence of retrieved sources, demo-fixture use, DOI metadata availability, and evidence-ledger source IDs. These checks do not prove that a citation supports a claim, nor certify originality, ethics, or publication readiness.")
+        print(
+            "Argumentum deterministically checks citation-ID resolution, presence of retrieved sources, demo-fixture use, DOI metadata availability, and evidence-ledger source IDs. These checks do not prove that a citation supports a claim, nor certify originality, ethics, or publication readiness."
+        )
         return 0
 
     if args.command == "run":
@@ -165,7 +177,9 @@ def main(argv: list[str] | None = None) -> int:
                 provider = DemoProvider()
             else:
                 if not settings.api_key and not _is_local_compatible_endpoint(settings.base_url):
-                    raise ValueError("No LLM API key is configured. Set ARGUMENTUM_LLM_API_KEY / OPENAI_API_KEY, configure a local compatible server, or use --demo.")
+                    raise ValueError(
+                        "No LLM API key is configured. Set ARGUMENTUM_LLM_API_KEY / OPENAI_API_KEY, configure a local compatible server, or use --demo."
+                    )
                 provider = OpenAICompatibleProvider(settings)
             pipeline = ResearchPipeline(provider, settings, demo_mode=args.demo)
             result = pipeline.run(request, args.output_dir, args.input_dir)

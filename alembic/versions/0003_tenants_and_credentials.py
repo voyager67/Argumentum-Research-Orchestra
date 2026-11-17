@@ -3,9 +3,11 @@
 Revision ID: 0003_tenants_and_credentials
 Revises: 0002_job_heartbeats
 """
+
 from __future__ import annotations
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision = "0003_tenants_and_credentials"
@@ -56,8 +58,9 @@ def upgrade() -> None:
             "fk_research_jobs_tenant_id_tenants", "tenants", ["tenant_id"], ["id"], ondelete="RESTRICT"
         )
     op.execute(
-        sa.text("UPDATE research_jobs SET tenant_id = :tenant_id WHERE tenant_id IS NULL")
-        .bindparams(tenant_id=DEFAULT_TENANT_ID)
+        sa.text("UPDATE research_jobs SET tenant_id = :tenant_id WHERE tenant_id IS NULL").bindparams(
+            tenant_id=DEFAULT_TENANT_ID
+        )
     )
     with op.batch_alter_table("research_jobs") as batch_op:
         batch_op.alter_column("tenant_id", existing_type=sa.String(length=36), nullable=False)

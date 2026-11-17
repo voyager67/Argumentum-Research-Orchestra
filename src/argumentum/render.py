@@ -14,10 +14,21 @@ def clean_text(value: Any) -> str:
 
 def render_manuscript(content: dict[str, Any], papers: list[Paper]) -> str:
     title = clean_text(content.get("title")) or "Untitled research manuscript"
-    abstract = clean_text(content.get("abstract")) or "[Abstract not supplied by the drafting agent. Human completion required.]"
+    abstract = (
+        clean_text(content.get("abstract"))
+        or "[Abstract not supplied by the drafting agent. Human completion required.]"
+    )
     keywords = content.get("keywords") if isinstance(content.get("keywords"), list) else []
     sections = content.get("sections") if isinstance(content.get("sections"), list) else []
-    lines = [f"# {title}", "", "> **Working draft.** This document was AI-assisted. All claims, methods, citations, results, ethics statements, and submission requirements require researcher verification.", "", "## Abstract", "", abstract]
+    lines = [
+        f"# {title}",
+        "",
+        "> **Working draft.** This document was AI-assisted. All claims, methods, citations, results, ethics statements, and submission requirements require researcher verification.",
+        "",
+        "## Abstract",
+        "",
+        abstract,
+    ]
     if keywords:
         lines.extend(["", "**Keywords:** " + "; ".join(str(item) for item in keywords if str(item).strip())])
     for section in sections:
@@ -41,7 +52,16 @@ def render_manuscript(content: dict[str, Any], papers: list[Paper]) -> str:
 
 
 def _bib_escape(value: str) -> str:
-    replacements = {"\\": r"\textbackslash{}", "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#", "_": r"\_", "{": r"\{", "}": r"\}"}
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+    }
     return "".join(replacements.get(char, char) for char in value)
 
 
@@ -68,8 +88,20 @@ def render_bibtex(papers: list[Paper]) -> str:
 
 
 def render_peer_review(review: dict[str, Any]) -> str:
-    lines = ["# Adversarial Peer Review", "", "> Automated critique for author assistance only. This is not independent human peer review.", "", "## Overall assessment", "", clean_text(review.get("overall_assessment")) or "No assessment returned."]
-    for key, heading in (("major_concerns", "Major concerns"), ("minor_concerns", "Minor concerns"), ("questions_for_authors", "Questions for authors")):
+    lines = [
+        "# Adversarial Peer Review",
+        "",
+        "> Automated critique for author assistance only. This is not independent human peer review.",
+        "",
+        "## Overall assessment",
+        "",
+        clean_text(review.get("overall_assessment")) or "No assessment returned.",
+    ]
+    for key, heading in (
+        ("major_concerns", "Major concerns"),
+        ("minor_concerns", "Minor concerns"),
+        ("questions_for_authors", "Questions for authors"),
+    ):
         lines.extend(["", f"## {heading}", ""])
         items = review.get(key) if isinstance(review.get(key), list) else []
         lines.extend([f"- {item}" for item in items] or ["- None returned."])
@@ -79,7 +111,12 @@ def render_peer_review(review: dict[str, Any]) -> str:
 
 def render_evidence_ledger(ledger: dict[str, Any]) -> str:
     claims = ledger.get("claims", []) if isinstance(ledger, dict) else []
-    rows = ["# Claim-to-source evidence ledger", "", "| Claim ID | Claim | Source IDs | Evidence type | Qualitative label | Limitations |", "|---|---|---|---|---|---|"]
+    rows = [
+        "# Claim-to-source evidence ledger",
+        "",
+        "| Claim ID | Claim | Source IDs | Evidence type | Qualitative label | Limitations |",
+        "|---|---|---|---|---|---|",
+    ]
     for item in claims if isinstance(claims, list) else []:
         if not isinstance(item, dict):
             continue
@@ -94,8 +131,14 @@ def render_evidence_ledger(ledger: dict[str, Any]) -> str:
             "; ".join(str(value) for value in limitations) if isinstance(limitations, list) else "",
         ]
         rows.append("| " + " | ".join(re.sub(r"[\r\n|]+", " ", str(cell)) for cell in cells) + " |")
-    rows.extend(["", "Qualitative labels are model-generated triage prompts, not calibrated probabilities or validated evidence grades."])
+    rows.extend(
+        [
+            "",
+            "Qualitative labels are model-generated triage prompts, not calibrated probabilities or validated evidence grades.",
+        ]
+    )
     return "\n".join(rows) + "\n"
+
 
 LATEX_SPECIAL = {
     "\\": r"\textbackslash{}",
@@ -118,12 +161,11 @@ def _latex_escape(value: str) -> str:
 def _latex_inline(value: str, papers: list[Paper]) -> str:
     """Convert a deliberately small, safe subset of Markdown inline syntax."""
     known = {paper.source_id: paper for paper in papers}
-    pattern = re.compile(
-        r"(\[(?:A|DEMO)-\d{3}\]|\[([^\]]+)\]\((https?://[^)]+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)")
+    pattern = re.compile(r"(\[(?:A|DEMO)-\d{3}\]|\[([^\]]+)\]\((https?://[^)]+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)")
     result: list[str] = []
     cursor = 0
     for match in pattern.finditer(value):
-        result.append(_latex_escape(value[cursor:match.start()]))
+        result.append(_latex_escape(value[cursor : match.start()]))
         token = match.group(0)
         if re.fullmatch(r"\[(?:A|DEMO)-\d{3}\]", token):
             source_id = token[1:-1]
@@ -163,7 +205,9 @@ def _latex_body(value: str, papers: list[Paper]) -> str:
 def render_latex(content: dict[str, Any], papers: list[Paper]) -> str:
     """Render a generic article-class LaTeX draft; target-venue compliance is out of scope."""
     title = _latex_escape(clean_text(content.get("title")) or "Untitled research manuscript")
-    abstract = _latex_body(clean_text(content.get("abstract")) or "Abstract completion required by the authors.", papers)
+    abstract = _latex_body(
+        clean_text(content.get("abstract")) or "Abstract completion required by the authors.", papers
+    )
     keywords = content.get("keywords") if isinstance(content.get("keywords"), list) else []
     sections = content.get("sections") if isinstance(content.get("sections"), list) else []
     lines = [
@@ -182,14 +226,18 @@ def render_latex(content: dict[str, Any], papers: list[Paper]) -> str:
         r"\maketitle",
     ]
     if any(paper.is_demo for paper in papers):
-        lines.extend([
-            r"\noindent\fbox{\parbox{0.95\linewidth}{\textbf{DEMO ONLY: Fictional source records. Do not cite or submit this output.}}}",
-        ])
-    lines.extend([
-        r"\begin{abstract}",
-        abstract,
-        r"\end{abstract}",
-    ])
+        lines.extend(
+            [
+                r"\noindent\fbox{\parbox{0.95\linewidth}{\textbf{DEMO ONLY: Fictional source records. Do not cite or submit this output.}}}",
+            ]
+        )
+    lines.extend(
+        [
+            r"\begin{abstract}",
+            abstract,
+            r"\end{abstract}",
+        ]
+    )
     if keywords:
         clean_keywords = "; ".join(str(item) for item in keywords if str(item).strip())
         lines.extend([r"\noindent\textbf{Keywords:} " + _latex_escape(clean_keywords)])

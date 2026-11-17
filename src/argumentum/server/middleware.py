@@ -18,7 +18,15 @@ class RequestBodyTooLarge(Exception):
 class UploadBodyLimitMiddleware:
     """Bound upload request bodies before Starlette parses/spools multipart files."""
 
-    def __init__(self, app: Callable[..., Awaitable[None]], *, max_body_bytes: int, expected_bearer_token: str = "", token_validator: Callable[[str], bool] | None = None, path: str = "/api/v1/runs/with-materials") -> None:
+    def __init__(
+        self,
+        app: Callable[..., Awaitable[None]],
+        *,
+        max_body_bytes: int,
+        expected_bearer_token: str = "",
+        token_validator: Callable[[str], bool] | None = None,
+        path: str = "/api/v1/runs/with-materials",
+    ) -> None:
         if max_body_bytes < 1:
             raise ValueError("max_body_bytes must be positive")
         self.app = app
@@ -40,6 +48,7 @@ class UploadBodyLimitMiddleware:
         if self.token_validator is not None:
             try:
                 import anyio
+
                 valid_token = await anyio.to_thread.run_sync(self.token_validator, supplied_token)
             except Exception:
                 valid_token = False
@@ -64,6 +73,7 @@ class UploadBodyLimitMiddleware:
                 return
         received = 0
         response_started = False
+
         async def limited_receive() -> ASGIMessage:
             nonlocal received
             message = await receive()
@@ -72,11 +82,13 @@ class UploadBodyLimitMiddleware:
                 if received > self.max_body_bytes:
                     raise RequestBodyTooLarge
             return message
+
         async def tracking_send(message: ASGIMessage) -> None:
             nonlocal response_started
             if message.get("type") == "http.response.start":
                 response_started = True
             await send(message)
+
         try:
             await self.app(scope, limited_receive, tracking_send)
         except RequestBodyTooLarge:
@@ -88,6 +100,16 @@ class UploadBodyLimitMiddleware:
 
     async def _respond(self, send: ASGISend, status: int, detail: str) -> None:
         import json
+
         body = json.dumps({"detail": detail}, separators=(",", ":")).encode("utf-8")
-        await send({"type": "http.response.start", "status": status, "headers": [(b"content-type", b"application/json"), (b"content-length", str(len(body)).encode("ascii"))]})
+        await send(
+            {
+                "type": "http.response.start",
+                "status": status,
+                "headers": [
+                    (b"content-type", b"application/json"),
+                    (b"content-length", str(len(body)).encode("ascii")),
+                ],
+            }
+        )
         await send({"type": "http.response.body", "body": body})

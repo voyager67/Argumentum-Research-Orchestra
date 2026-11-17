@@ -71,12 +71,16 @@ def main() -> int:
     if not isinstance(ui, str) or "ARGUMENTUM" not in ui:
         raise SystemExit("Researcher UI did not return the expected page")
 
-    accepted = request("/api/v1/runs", token, {
-        "topic": "Docker Compose integration smoke test",
-        "question": "Can the containerized database, queue, API and worker complete an offline research workflow?",
-        "source_limit": 2,
-        "demo_mode": True,
-    })
+    accepted = request(
+        "/api/v1/runs",
+        token,
+        {
+            "topic": "Docker Compose integration smoke test",
+            "question": "Can the containerized database, queue, API and worker complete an offline research workflow?",
+            "source_limit": 2,
+            "demo_mode": True,
+        },
+    )
     if not isinstance(accepted, dict) or not accepted.get("run_id"):
         raise SystemExit("Run submission did not return a run_id")
     run_id = str(accepted["run_id"])

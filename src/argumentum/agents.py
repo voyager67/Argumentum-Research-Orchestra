@@ -18,10 +18,26 @@ class CapabilityPack:
 
 CAPABILITY_PACKS: tuple[CapabilityPack, ...] = (
     CapabilityPack("research_design", "Research Design", "Question framing, scope, assumptions, and search strategy."),
-    CapabilityPack("literature_evidence", "Literature & Evidence", "Scholarly discovery, screening, evidence mapping, and synthesis."),
-    CapabilityPack("methodology_data", "Methodology & Data", "Design critique, validity, data inventory, and figure recommendations."),
-    CapabilityPack("scholarly_writing_review", "Scholarly Writing & Review", "Manuscript drafting, adversarial critique, and evidence-bounded revision."),
-    CapabilityPack("research_integrity", "Research Integrity & Reproducibility", "Traceability, disclosures, provenance, and integrity checks."),
+    CapabilityPack(
+        "literature_evidence",
+        "Literature & Evidence",
+        "Scholarly discovery, screening, evidence mapping, and synthesis.",
+    ),
+    CapabilityPack(
+        "methodology_data",
+        "Methodology & Data",
+        "Design critique, validity, data inventory, and figure recommendations.",
+    ),
+    CapabilityPack(
+        "scholarly_writing_review",
+        "Scholarly Writing & Review",
+        "Manuscript drafting, adversarial critique, and evidence-bounded revision.",
+    ),
+    CapabilityPack(
+        "research_integrity",
+        "Research Integrity & Reproducibility",
+        "Traceability, disclosures, provenance, and integrity checks.",
+    ),
 )
 
 
@@ -35,16 +51,76 @@ class AgentSpec:
 
 
 AGENTS: tuple[AgentSpec, ...] = (
-    AgentSpec("research_director", "Research Director", "research_design", "question_framing", "Frames the question, scope, assumptions, and search plan."),
-    AgentSpec("literature_scout", "Literature Scout", "literature_evidence", "literature_screening", "Screens retrieved metadata and abstracts without inventing sources."),
-    AgentSpec("evidence_analyst", "Evidence Analyst", "literature_evidence", "evidence_mapping", "Maps bounded claims to specific retrieved source identifiers."),
-    AgentSpec("methodologist", "Methodology Auditor", "methodology_data", "methodology_audit", "Challenges design fit, validity, sampling, measurement, and inference."),
-    AgentSpec("synthesis_architect", "Synthesis Architect", "literature_evidence", "evidence_synthesis", "Identifies themes, disagreements, research gaps, and implications."),
-    AgentSpec("figure_analyst", "Data & Figure Analyst", "methodology_data", "data_interpretation", "Reviews provided tabular data previews and recommends transparent figures/tables."),
-    AgentSpec("manuscript_composer", "Manuscript Composer", "scholarly_writing_review", "manuscript_composition", "Builds a structured, source-aware manuscript draft."),
-    AgentSpec("adversarial_reviewer", "Adversarial Peer Reviewer", "scholarly_writing_review", "adversarial_review", "Finds unsupported claims, design weaknesses, and missing disclosures."),
-    AgentSpec("revision_editor", "Revision Editor", "scholarly_writing_review", "evidence_bounded_revision", "Revises the draft while preserving evidence boundaries."),
-    AgentSpec("integrity_auditor", "Research Integrity Auditor", "research_integrity", "research_integrity_audit", "Checks traceability, limitations, citation discipline, and disclosure."),
+    AgentSpec(
+        "research_director",
+        "Research Director",
+        "research_design",
+        "question_framing",
+        "Frames the question, scope, assumptions, and search plan.",
+    ),
+    AgentSpec(
+        "literature_scout",
+        "Literature Scout",
+        "literature_evidence",
+        "literature_screening",
+        "Screens retrieved metadata and abstracts without inventing sources.",
+    ),
+    AgentSpec(
+        "evidence_analyst",
+        "Evidence Analyst",
+        "literature_evidence",
+        "evidence_mapping",
+        "Maps bounded claims to specific retrieved source identifiers.",
+    ),
+    AgentSpec(
+        "methodologist",
+        "Methodology Auditor",
+        "methodology_data",
+        "methodology_audit",
+        "Challenges design fit, validity, sampling, measurement, and inference.",
+    ),
+    AgentSpec(
+        "synthesis_architect",
+        "Synthesis Architect",
+        "literature_evidence",
+        "evidence_synthesis",
+        "Identifies themes, disagreements, research gaps, and implications.",
+    ),
+    AgentSpec(
+        "figure_analyst",
+        "Data & Figure Analyst",
+        "methodology_data",
+        "data_interpretation",
+        "Reviews provided tabular data previews and recommends transparent figures/tables.",
+    ),
+    AgentSpec(
+        "manuscript_composer",
+        "Manuscript Composer",
+        "scholarly_writing_review",
+        "manuscript_composition",
+        "Builds a structured, source-aware manuscript draft.",
+    ),
+    AgentSpec(
+        "adversarial_reviewer",
+        "Adversarial Peer Reviewer",
+        "scholarly_writing_review",
+        "adversarial_review",
+        "Finds unsupported claims, design weaknesses, and missing disclosures.",
+    ),
+    AgentSpec(
+        "revision_editor",
+        "Revision Editor",
+        "scholarly_writing_review",
+        "evidence_bounded_revision",
+        "Revises the draft while preserving evidence boundaries.",
+    ),
+    AgentSpec(
+        "integrity_auditor",
+        "Research Integrity Auditor",
+        "research_integrity",
+        "research_integrity_audit",
+        "Checks traceability, limitations, citation discipline, and disclosure.",
+    ),
 )
 
 SYSTEM_PROMPT = """You are a specialist agent inside Argumentum, a researcher-controlled academic workflow.

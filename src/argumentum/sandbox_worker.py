@@ -16,7 +16,7 @@ import sys
 import tempfile
 import time
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -29,7 +29,7 @@ ISOLATION_LABEL = "bubblewrap user/mount/pid/network namespaces; no network; no 
 
 
 def _utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+    return datetime.now(UTC).isoformat(timespec="seconds")
 
 
 def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
@@ -65,15 +65,28 @@ def build_bwrap_command(code_path: Path, work_dir: Path) -> list[str]:
         "--die-with-parent",
         "--new-session",
         "--unshare-all",
-        "--ro-bind", "/usr", "/usr",
-        "--ro-bind", "/etc", "/etc",
-        "--proc", "/proc",
-        "--dev", "/dev",
-        "--tmpfs", "/tmp",
-        "--bind", str(work_dir), "/work",
-        "--chdir", "/work",
+        "--ro-bind",
+        "/usr",
+        "/usr",
+        "--ro-bind",
+        "/etc",
+        "/etc",
+        "--proc",
+        "/proc",
+        "--dev",
+        "/dev",
+        "--tmpfs",
+        "/tmp",
+        "--bind",
+        str(work_dir),
+        "/work",
+        "--chdir",
+        "/work",
         sys.executable,
-        "-I", "-S", "-B", "/work/main.py",
+        "-I",
+        "-S",
+        "-B",
+        "/work/main.py",
     ]
     # CPython in official images is under /usr/local; /usr contains the runtime and
     # site libraries. /lib* are needed for some dynamically linked builds.
@@ -141,24 +154,43 @@ def process_job(job_path: Path) -> dict[str, Any]:
                 stderr = stderr_path.read_bytes()[:MAX_STDERR_BYTES].decode("utf-8", errors="replace")
                 status = "succeeded" if completed.returncode == 0 else "failed"
                 result = {
-                    "exit_code": int(completed.returncode), "elapsed_seconds": round(time.monotonic() - started, 3),
-                    "stdout": stdout, "stderr": stderr, "isolation": ISOLATION_LABEL,
+                    "exit_code": int(completed.returncode),
+                    "elapsed_seconds": round(time.monotonic() - started, 3),
+                    "stdout": stdout,
+                    "stderr": stderr,
+                    "isolation": ISOLATION_LABEL,
                 }
             except subprocess.TimeoutExpired:
-                stdout = stdout_path.read_bytes()[:MAX_STDOUT_BYTES].decode("utf-8", errors="replace") if stdout_path.exists() else ""
-                stderr = stderr_path.read_bytes()[:MAX_STDERR_BYTES].decode("utf-8", errors="replace") if stderr_path.exists() else ""
+                stdout = (
+                    stdout_path.read_bytes()[:MAX_STDOUT_BYTES].decode("utf-8", errors="replace")
+                    if stdout_path.exists()
+                    else ""
+                )
+                stderr = (
+                    stderr_path.read_bytes()[:MAX_STDERR_BYTES].decode("utf-8", errors="replace")
+                    if stderr_path.exists()
+                    else ""
+                )
                 status = "failed"
                 result = {
-                    "exit_code": None, "elapsed_seconds": round(time.monotonic() - started, 3),
-                    "stdout": stdout, "stderr": (stderr + "\nExperiment exceeded its wall-clock limit.")[-MAX_STDERR_BYTES:],
+                    "exit_code": None,
+                    "elapsed_seconds": round(time.monotonic() - started, 3),
+                    "stdout": stdout,
+                    "stderr": (stderr + "\nExperiment exceeded its wall-clock limit.")[-MAX_STDERR_BYTES:],
                     "isolation": ISOLATION_LABEL,
                 }
     except Exception as exc:
         status = "blocked" if type(exc).__name__ == "RuntimeError" else "failed"
-        safe_message = "Sandbox isolation is unavailable; no experiment code was executed." if status == "blocked" else "Sandbox runner failed before producing a result."
+        safe_message = (
+            "Sandbox isolation is unavailable; no experiment code was executed."
+            if status == "blocked"
+            else "Sandbox runner failed before producing a result."
+        )
         result = {
-            "exit_code": None, "elapsed_seconds": round(time.monotonic() - started, 3),
-            "stdout": "", "stderr": f"{type(exc).__name__}: {safe_message}",
+            "exit_code": None,
+            "elapsed_seconds": round(time.monotonic() - started, 3),
+            "stdout": "",
+            "stderr": f"{type(exc).__name__}: {safe_message}",
             "isolation": None,
         }
 

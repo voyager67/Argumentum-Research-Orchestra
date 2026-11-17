@@ -48,7 +48,7 @@ def _extract_grobid(path: Path, base_url: str, timeout_seconds: int = 180) -> st
         f"--{boundary}\r\n"
         f'Content-Disposition: form-data; name="input"; filename="{filename}"\r\n'
         "Content-Type: application/pdf\r\n\r\n"
-    ).encode("utf-8")
+    ).encode()
     suffix = f"\r\n--{boundary}--\r\n".encode("ascii")
     request = urllib.request.Request(
         f"{base_url.rstrip('/')}/api/processFulltextDocument",
@@ -95,7 +95,9 @@ def _extract_grobid(path: Path, base_url: str, timeout_seconds: int = 180) -> st
     if body:
         chunks.extend(["## Full text", body, ""])
     if bibliography:
-        chunks.extend(["## Extracted references (verify against the PDF)", *[f"- {item}" for item in bibliography[:300]]])
+        chunks.extend(
+            ["## Extracted references (verify against the PDF)", *[f"- {item}" for item in bibliography[:300]]]
+        )
     if not any((title, abstract, body, bibliography)):
         raise GrobidError("GROBID produced no readable article content")
     return "\n".join(chunks)
@@ -137,7 +139,9 @@ def _extract_optional(path: Path) -> str:
     raise ValueError(f"Unsupported document type: {path.suffix}")
 
 
-def read_materials(directory: str | Path | None, grobid_url: str | None = None, grobid_timeout_seconds: int = 180) -> tuple[list[InputDocument], list[str]]:
+def read_materials(
+    directory: str | Path | None, grobid_url: str | None = None, grobid_timeout_seconds: int = 180
+) -> tuple[list[InputDocument], list[str]]:
     """Read supported files deterministically, with size limits and SHA-256 provenance."""
     if directory is None:
         return [], []
@@ -168,7 +172,9 @@ def read_materials(directory: str | Path | None, grobid_url: str | None = None, 
                 try:
                     text = _extract_grobid(path, grobid_url, grobid_timeout_seconds)
                 except (GrobidError, OSError) as grobid_exc:
-                    warnings.append(f"GROBID extraction failed for {path.name} ({type(grobid_exc).__name__}); using local PDF text extraction.")
+                    warnings.append(
+                        f"GROBID extraction failed for {path.name} ({type(grobid_exc).__name__}); using local PDF text extraction."
+                    )
                     text = _extract_optional(path)
             else:
                 text = _extract_optional(path) if suffix in OPTIONAL_DOCUMENTS else path.read_text(encoding="utf-8")
@@ -214,15 +220,17 @@ def summarize_csv_documents(documents: Iterable[InputDocument]) -> list[dict[str
             preview.append(safe_row)
 
         source_excerpt_complete = len(document.text.encode("utf-8")) >= document.size_bytes
-        summaries.append({
-            "path": document.path,
-            "row_count_in_excerpt": len(rows),
-            "row_count_is_complete": source_excerpt_complete and not scan_truncated,
-            "columns": [str(column)[:120] for column in columns],
-            "preview": preview,
-            "note": (
-                f"Bounded excerpt only; scanned at most {MAX_CSV_SCAN_ROWS} rows and previewed the first "
-                f"{MAX_CSV_PREVIEW_ROWS}. no statistical analysis was run. The excerpt may not contain the full table."
-            ),
-        })
+        summaries.append(
+            {
+                "path": document.path,
+                "row_count_in_excerpt": len(rows),
+                "row_count_is_complete": source_excerpt_complete and not scan_truncated,
+                "columns": [str(column)[:120] for column in columns],
+                "preview": preview,
+                "note": (
+                    f"Bounded excerpt only; scanned at most {MAX_CSV_SCAN_ROWS} rows and previewed the first "
+                    f"{MAX_CSV_PREVIEW_ROWS}. no statistical analysis was run. The excerpt may not contain the full table."
+                ),
+            }
+        )
     return summaries

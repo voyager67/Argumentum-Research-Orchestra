@@ -11,6 +11,7 @@ ResearchQuery = Annotated[str, StringConstraints(strip_whitespace=True, min_leng
 ResearchTopic = Annotated[str, StringConstraints(strip_whitespace=True, min_length=3, max_length=500)]
 ResearchQuestion = Annotated[str, StringConstraints(strip_whitespace=True, min_length=10, max_length=2_000)]
 
+
 class ResearchRunRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     topic: ResearchTopic
@@ -23,10 +24,12 @@ class ResearchRunRequest(BaseModel):
     demo_mode: bool = False
     project_id: str | None = None
 
+
 class ResearchRunAccepted(BaseModel):
     run_id: str
     status: Literal["queued"]
     status_url: str
+
 
 class ResearchRunStatus(BaseModel):
     run_id: str
@@ -39,10 +42,12 @@ class ResearchRunStatus(BaseModel):
     error: str | None = None
     artifacts_url: str | None = None
 
+
 class ArtifactInfo(BaseModel):
     name: str
     size_bytes: int
     download_url: str
+
 
 class RetryRunResponse(BaseModel):
     status: str
@@ -51,6 +56,7 @@ class RetryRunResponse(BaseModel):
     current_status: str | None = None
     error: str | None = None
 
+
 class ReconciliationResponse(BaseModel):
     examined: int
     requeued: list[dict[str, str]]
@@ -58,14 +64,19 @@ class ReconciliationResponse(BaseModel):
     skipped: list[dict[str, str]]
     failed: list[dict[str, str]]
 
+
 class TenantCreateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=160)]
-    slug: Annotated[str, StringConstraints(strip_whitespace=True, pattern=r"^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$", max_length=80)]
+    slug: Annotated[
+        str, StringConstraints(strip_whitespace=True, pattern=r"^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$", max_length=80)
+    ]
+
 
 class TenantActivationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     is_active: bool
+
 
 class TenantCreated(BaseModel):
     tenant_id: str
@@ -75,10 +86,12 @@ class TenantCreated(BaseModel):
     owner_token: str
     role: str = "owner"
 
+
 class CredentialCreateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=120)]
     role: Literal["admin", "researcher", "viewer"] = "researcher"
+
 
 class CredentialCreated(BaseModel):
     credential_id: str
@@ -86,6 +99,7 @@ class CredentialCreated(BaseModel):
     role: str
     token: str
     created_at: datetime
+
 
 class CredentialInfo(BaseModel):
     credential_id: str
@@ -95,6 +109,7 @@ class CredentialInfo(BaseModel):
     created_at: datetime
     last_used_at: datetime | None = None
 
+
 class TenantAdminInfo(BaseModel):
     tenant_id: str
     name: str
@@ -102,11 +117,13 @@ class TenantAdminInfo(BaseModel):
     is_active: bool
     created_at: datetime
 
+
 class TenantInfo(BaseModel):
     tenant_id: str
     name: str
     slug: str
     role: str
+
 
 class ExperimentExecutionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -115,11 +132,13 @@ class ExperimentExecutionRequest(BaseModel):
     timeout_seconds: int = Field(default=10, ge=1, le=30)
     human_approved: Literal[True]
 
+
 class ExperimentAccepted(BaseModel):
     experiment_id: str
     status: Literal["queued"]
     status_url: str
     approval_recorded: bool
+
 
 class ExperimentStatus(BaseModel):
     experiment_id: str
@@ -133,17 +152,26 @@ class ExperimentStatus(BaseModel):
     stderr: str = ""
     isolation: str | None = None
 
+
 class ProjectCreateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=160)]
-    slug: Annotated[str, StringConstraints(strip_whitespace=True, pattern=r"^[a-z0-9](?:[a-z0-9-]{0,98}[a-z0-9])?$", max_length=100)] | None = None
+    slug: (
+        Annotated[
+            str,
+            StringConstraints(strip_whitespace=True, pattern=r"^[a-z0-9](?:[a-z0-9-]{0,98}[a-z0-9])?$", max_length=100),
+        ]
+        | None
+    ) = None
     description: Annotated[str, StringConstraints(max_length=4_000)] = ""
+
 
 class ProjectUpdateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=160)] | None = None
     description: Annotated[str, StringConstraints(max_length=4_000)] | None = None
     status: Literal["active", "archived"] | None = None
+
 
 class ProjectInfo(BaseModel):
     project_id: str

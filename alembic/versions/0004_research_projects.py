@@ -3,9 +3,11 @@
 Revision ID: 0004_research_projects
 Revises: 0003_tenants_and_credentials
 """
+
 from __future__ import annotations
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision = "0004_research_projects"
@@ -32,7 +34,11 @@ def upgrade() -> None:
     with op.batch_alter_table("research_jobs") as batch_op:
         batch_op.add_column(sa.Column("project_id", sa.String(length=36), nullable=True))
         batch_op.create_foreign_key(
-            "fk_research_jobs_project_id_research_projects", "research_projects", ["project_id"], ["id"], ondelete="SET NULL"
+            "fk_research_jobs_project_id_research_projects",
+            "research_projects",
+            ["project_id"],
+            ["id"],
+            ondelete="SET NULL",
         )
     op.create_index("ix_research_jobs_project_id", "research_jobs", ["project_id"])
 

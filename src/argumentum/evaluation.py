@@ -78,11 +78,17 @@ def load_benchmark_jsonl(path: str | Path) -> list[dict[str, Any]]:
         if query_id in seen_query_ids:
             raise BenchmarkInputError(f"Duplicate query_id {query_id!r}")
         seen_query_ids.add(query_id)
-        rows.append({
-            "query_id": query_id,
-            "retrieved_ids": _unique_string_list(payload.get("retrieved_ids"), "retrieved_ids", query_id, allow_empty=True),
-            "relevant_ids": _unique_string_list(payload.get("relevant_ids"), "relevant_ids", query_id, allow_empty=False),
-        })
+        rows.append(
+            {
+                "query_id": query_id,
+                "retrieved_ids": _unique_string_list(
+                    payload.get("retrieved_ids"), "retrieved_ids", query_id, allow_empty=True
+                ),
+                "relevant_ids": _unique_string_list(
+                    payload.get("relevant_ids"), "relevant_ids", query_id, allow_empty=False
+                ),
+            }
+        )
     if not rows:
         raise BenchmarkInputError("Benchmark file contains no query records")
     return rows
