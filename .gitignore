@@ -1,0 +1,30 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Local secrets (keep the documented template)
+.env
+.env.*
+!.env.example
+
+# Local runs and deployment data
+argumentum-output/
+output/
+runs/
+data/
+volumes/
+*.sqlite
+*.db
+model-cache/
+
+# OS/editor files
+.DS_Store
+Thumbs.db

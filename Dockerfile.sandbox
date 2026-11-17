@@ -1,0 +1,21 @@
+# Minimal opt-in experiment execution image. It contains no API credentials, database
+# client, model provider, or network listener. Research code is run inside bubblewrap.
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    ARGUMENTUM_DATA_DIR=/data
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bubblewrap ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 argumentum \
+    && useradd --system --uid 10001 --gid argumentum --home-dir /nonexistent --shell /usr/sbin/nologin argumentum \
+    && mkdir -p /data/sandbox/inbox /data/sandbox/processing /data/sandbox/results \
+    && chown -R argumentum:argumentum /data
+
+WORKDIR /app
+COPY src/argumentum/sandbox_worker.py ./sandbox_worker.py
+USER 10001:10001
+
+CMD ["python", "/app/sandbox_worker.py"]

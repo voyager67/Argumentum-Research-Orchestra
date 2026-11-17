@@ -1,0 +1,196 @@
+name: argumentum
+
+services:
+  postgres:
+    image: postgres:17.12-alpine3.23
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-argumentum}
+      POSTGRES_USER: ${POSTGRES_USER:-argumentum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks: [backend]
+
+  redis:
+    image: redis:7.2.17-alpine
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [backend]
+
+  ollama:
+    image: ollama/ollama:0.13.3
+    profiles: [ollama]
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    expose:
+      - "11434"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks: [backend]
+
+  grobid:
+    image: ${GROBID_IMAGE:-grobid/grobid:0.8.2}
+    profiles: [documents]
+    restart: unless-stopped
+    expose:
+      - "8070"
+    networks: [backend]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ARGUMENTUM_EXTRAS: ${ARGUMENTUM_EXTRAS:-server,all-documents}
+    image: argumentum-research:local
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-argumentum}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-argumentum}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      ARGUMENTUM_DATA_DIR: /data
+      ARGUMENTUM_API_TOKEN: ${ARGUMENTUM_API_TOKEN:?Set ARGUMENTUM_API_TOKEN in .env}
+      ARGUMENTUM_ADMIN_TOKEN: ${ARGUMENTUM_ADMIN_TOKEN:?Set ARGUMENTUM_ADMIN_TOKEN in .env}
+      ARGUMENTUM_DOCS_ENABLED: ${ARGUMENTUM_DOCS_ENABLED:-true}
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command: ["sh", "-c", "alembic upgrade head && exec uvicorn argumentum.server.api:app --host 0.0.0.0 --port 8080 --proxy-headers"]
+    ports:
+      - "${ARGUMENTUM_BIND_HOST:-127.0.0.1}:${ARGUMENTUM_PORT:-8080}:8080"
+    volumes:
+      - argumentum_data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [backend]
+
+  worker:
+    image: argumentum-research:local
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-argumentum}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-argumentum}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      ARGUMENTUM_DATA_DIR: /data
+      ARGUMENTUM_LLM_BASE_URL: ${ARGUMENTUM_LLM_BASE_URL:-http://ollama:11434/v1}
+      ARGUMENTUM_LLM_API_KEY: ${ARGUMENTUM_LLM_API_KEY:-}
+      ARGUMENTUM_LLM_MODEL: ${ARGUMENTUM_LLM_MODEL:-qwen2.5:14b}
+      ARGUMENTUM_AGENT_HARNESS: ${ARGUMENTUM_AGENT_HARNESS:-native}
+      ARGUMENTUM_TIMEOUT_SECONDS: ${ARGUMENTUM_TIMEOUT_SECONDS:-180}
+      ARGUMENTUM_MAX_RETRIES: ${ARGUMENTUM_MAX_RETRIES:-2}
+      ARGUMENTUM_JOB_RETRIES: ${ARGUMENTUM_JOB_RETRIES:-2}
+      ARGUMENTUM_GROBID_URL: ${ARGUMENTUM_GROBID_URL:-}
+      ARGUMENTUM_GROBID_TIMEOUT_SECONDS: ${ARGUMENTUM_GROBID_TIMEOUT_SECONDS:-180}
+      OPENALEX_API_KEY: ${OPENALEX_API_KEY:-}
+      SEMANTIC_SCHOLAR_API_KEY: ${SEMANTIC_SCHOLAR_API_KEY:-}
+      ARGUMENTUM_MAILTO: ${ARGUMENTUM_MAILTO:-}
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 60s
+    command: ["python", "-m", "argumentum.server.worker_main"]
+    volumes:
+      - argumentum_data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [backend]
+
+  sandbox_runner:
+    profiles: [sandbox]
+    build:
+      context: .
+      dockerfile: Dockerfile.sandbox
+    image: argumentum-sandbox:local
+    restart: unless-stopped
+    init: true
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,size=128m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    network_mode: none
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 64
+    environment:
+      ARGUMENTUM_DATA_DIR: /data
+      ARGUMENTUM_SANDBOX_POLL_SECONDS: ${ARGUMENTUM_SANDBOX_POLL_SECONDS:-1}
+    volumes:
+      - argumentum_data:/data
+    stop_grace_period: 10s
+
+  reconciler:
+    image: argumentum-research:local
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-argumentum}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-argumentum}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      ARGUMENTUM_DATA_DIR: /data
+      ARGUMENTUM_JOB_RETRIES: ${ARGUMENTUM_JOB_RETRIES:-2}
+      ARGUMENTUM_RECONCILE_INTERVAL_SECONDS: ${ARGUMENTUM_RECONCILE_INTERVAL_SECONDS:-60}
+      ARGUMENTUM_STALE_WORKER_SECONDS: ${ARGUMENTUM_STALE_WORKER_SECONDS:-1800}
+      ARGUMENTUM_RECONCILE_BATCH_SIZE: ${ARGUMENTUM_RECONCILE_BATCH_SIZE:-50}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command: ["python", "-m", "argumentum.server.reconciler_main"]
+    volumes:
+      - argumentum_data:/data:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [backend]
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_models:
+  argumentum_data:

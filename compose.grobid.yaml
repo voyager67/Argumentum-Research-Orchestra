@@ -1,0 +1,7 @@
+services:
+  worker:
+    environment:
+      ARGUMENTUM_GROBID_URL: http://grobid:8070
+    depends_on:
+      grobid:
+        condition: service_started

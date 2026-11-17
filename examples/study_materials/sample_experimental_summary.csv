@@ -1,0 +1,3 @@
+configuration,questions_evaluated,annotator_count,status
+retrieval_only,not_run,not_run,planning_only
+retrieval_plus_attribution,not_run,not_run,planning_only

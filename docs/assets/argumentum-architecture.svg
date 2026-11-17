@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc">
+<title id="title">ARGUMENTUM research infrastructure architecture</title>
+<desc id="desc">Researcher workspace and API connect to tenant-aware orchestration and selectable native, LangGraph, CrewAI and Microsoft Agent Framework full-pipeline harnesses. A thirteen-stage research lifecycle accesses scholarly metadata services and model endpoints, with PostgreSQL, Redis and persistent artifact storage, operational monitoring and safety boundaries.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#eef2f8"/></linearGradient>
+ <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16233a"/><stop offset="1" stop-color="#23395b"/></linearGradient>
+ <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#172b4d" flood-opacity=".09"/></filter>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#8190a8"/></marker>
+ <style>
+  .h{font:700 27px Inter,Arial,sans-serif;fill:#15243b}.sub{font:500 16px Inter,Arial,sans-serif;fill:#60708a}.k{font:700 13px Inter,Arial,sans-serif;letter-spacing:1.5px;fill:#61728e}.boxh{font:700 18px Inter,Arial,sans-serif;fill:#20304b}.body{font:500 14px Inter,Arial,sans-serif;fill:#52627a}.small{font:500 12px Inter,Arial,sans-serif;fill:#6b7a91}.white{fill:#f8fbff}.whitesub{fill:#c0ccdc}.stage{font:600 13px Inter,Arial,sans-serif;fill:#2e405d}.pill{font:700 12px Inter,Arial,sans-serif;fill:#2446b3}
+ </style>
+</defs>
+<rect width="1800" height="1120" fill="url(#bg)"/>
+<text x="82" y="74" class="k">SYSTEM ARCHITECTURE / SELF-HOSTED RESEARCH INFRASTRUCTURE</text>
+<text x="82" y="123" class="h" font-size="38">ARGUMENTUM Research Engine</text>
+<text x="82" y="154" class="sub">Researcher-controlled orchestration · source-aware evidence · durable workflows · human governance</text>
+
+<!-- Interfaces -->
+<rect x="82" y="202" rx="18" width="1636" height="116" fill="#fff" stroke="#dfe6ef" filter="url(#shadow)"/>
+<text x="112" y="236" class="k">RESEARCH INTERFACES</text>
+<g>
+ <rect x="112" y="254" rx="10" width="290" height="44" fill="#eef2ff"/><text x="257" y="282" text-anchor="middle" class="boxh">Researcher workspace · /ui</text>
+ <rect x="424" y="254" rx="10" width="270" height="44" fill="#eef2ff"/><text x="559" y="282" text-anchor="middle" class="boxh">REST API · OpenAPI</text>
+ <rect x="716" y="254" rx="10" width="270" height="44" fill="#eef2ff"/><text x="851" y="282" text-anchor="middle" class="boxh">CLI · Python package</text>
+ <rect x="1008" y="254" rx="10" width="300" height="44" fill="#eef2ff"/><text x="1158" y="282" text-anchor="middle" class="boxh">Researcher source materials</text>
+ <rect x="1330" y="254" rx="10" width="356" height="44" fill="#e9f5ef"/><text x="1508" y="282" text-anchor="middle" class="boxh">Workspace RBAC · tenant isolation</text>
+</g>
+<path d="M900 318 V356" stroke="#8190a8" stroke-width="3" marker-end="url(#arrow)"/>
+
+<!-- Orchestration -->
+<rect x="82" y="366" rx="18" width="1636" height="170" fill="#fff" stroke="#dfe6ef" filter="url(#shadow)"/>
+<text x="112" y="402" class="k">FULL-PIPELINE ORCHESTRATION · SELECT ONE HARNESS PER RUN</text>
+<rect x="112" y="424" rx="11" width="340" height="84" fill="url(#navy)"/>
+<text x="282" y="459" text-anchor="middle" class="boxh white">Pipeline coordinator</text><text x="282" y="483" text-anchor="middle" class="small whitesub">13 ordered lifecycle stages · shared run state</text>
+<g>
+ <rect x="484" y="424" rx="11" width="272" height="84" fill="#f1f4fa" stroke="#dce4ef"/><text x="620" y="459" text-anchor="middle" class="boxh">Native</text><text x="620" y="483" text-anchor="middle" class="small">Deterministic sequential execution</text>
+ <rect x="778" y="424" rx="11" width="272" height="84" fill="#edf1ff" stroke="#d9e1ff"/><text x="914" y="459" text-anchor="middle" class="boxh">LangGraph</text><text x="914" y="483" text-anchor="middle" class="small">StateGraph with compiled stage nodes</text>
+ <rect x="1072" y="424" rx="11" width="272" height="84" fill="#fff5e8" stroke="#f1e1c9"/><text x="1208" y="459" text-anchor="middle" class="boxh">CrewAI Flow</text><text x="1208" y="483" text-anchor="middle" class="small">Stateful event-driven stage flow</text>
+ <rect x="1366" y="424" rx="11" width="320" height="84" fill="#eaf5f1" stroke="#d4e9e0"/><text x="1526" y="459" text-anchor="middle" class="boxh">Microsoft Agent Framework</text><text x="1526" y="483" text-anchor="middle" class="small">Typed executor workflow graph</text>
+</g>
+
+<path d="M900 536 V574" stroke="#8190a8" stroke-width="3" marker-end="url(#arrow)"/>
+<!-- Lifecycle -->
+<rect x="82" y="584" rx="18" width="1636" height="222" fill="#fff" stroke="#dfe6ef" filter="url(#shadow)"/>
+<text x="112" y="622" class="k">RESEARCH LIFECYCLE · TEN SPECIALIST AGENTS ACROSS FIVE CAPABILITY PACKS</text>
+<g>
+ <rect x="112" y="648" rx="9" width="225" height="62" fill="#eff3ff"/><text x="224" y="675" class="stage" text-anchor="middle">01 · Research design</text><text x="224" y="695" class="small" text-anchor="middle">Research Director</text>
+ <rect x="350" y="648" rx="9" width="225" height="62" fill="#eff3ff"/><text x="462" y="675" class="stage" text-anchor="middle">02 · Literature</text><text x="462" y="695" class="small" text-anchor="middle">Scout &amp; screening</text>
+ <rect x="588" y="648" rx="9" width="225" height="62" fill="#eaf5f1"/><text x="700" y="675" class="stage" text-anchor="middle">03 · Evidence &amp; methods</text><text x="700" y="695" class="small" text-anchor="middle">Evidence + Methodology</text>
+ <rect x="826" y="648" rx="9" width="225" height="62" fill="#eaf5f1"/><text x="938" y="675" class="stage" text-anchor="middle">04 · Synthesis &amp; data</text><text x="938" y="695" class="small" text-anchor="middle">Synthesis + Figures</text>
+ <rect x="1064" y="648" rx="9" width="225" height="62" fill="#fff5e8"/><text x="1176" y="675" class="stage" text-anchor="middle">05 · Manuscript</text><text x="1176" y="695" class="small" text-anchor="middle">Composer</text>
+ <rect x="1302" y="648" rx="9" width="225" height="62" fill="#fff5e8"/><text x="1414" y="675" class="stage" text-anchor="middle">06 · Critical review</text><text x="1414" y="695" class="small" text-anchor="middle">Adversarial review + revision</text>
+ <rect x="1540" y="648" rx="9" width="146" height="62" fill="#f1edf9"/><text x="1613" y="675" class="stage" text-anchor="middle">07 · Integrity</text><text x="1613" y="695" class="small" text-anchor="middle">Audit + export</text>
+</g>
+<path d="M337 679 H347 M575 679 H585 M813 679 H823 M1051 679 H1061 M1289 679 H1299 M1527 679 H1537" stroke="#8190a8" stroke-width="2.3" marker-end="url(#arrow)"/>
+<text x="112" y="756" class="small">Shared state · structured outputs · bounded context · source catalogue authority · citation-ID audit · run manifest</text>
+
+<!-- infra -->
+<g filter="url(#shadow)">
+ <rect x="82" y="842" rx="16" width="510" height="194" fill="#fff" stroke="#dfe6ef"/>
+ <rect x="626" y="842" rx="16" width="548" height="194" fill="#fff" stroke="#dfe6ef"/>
+ <rect x="1208" y="842" rx="16" width="510" height="194" fill="#fff" stroke="#dfe6ef"/>
+</g>
+<text x="112" y="879" class="k">DURABLE OPERATIONS</text>
+<rect x="112" y="902" width="206" height="48" rx="9" fill="#edf1ff"/><text x="215" y="932" text-anchor="middle" class="boxh">PostgreSQL</text>
+<rect x="336" y="902" width="224" height="48" rx="9" fill="#fff5e8"/><text x="448" y="932" text-anchor="middle" class="boxh">Redis · RQ</text>
+<text x="112" y="985" class="small">Tenants · projects · credentials · jobs · heartbeats</text>
+<text x="656" y="879" class="k">TOOLS &amp; RESEARCH RESOURCES</text>
+<rect x="656" y="902" width="238" height="48" rx="9" fill="#eaf5f1"/><text x="775" y="932" text-anchor="middle" class="boxh">Scholarly indexes</text>
+<rect x="912" y="902" width="232" height="48" rx="9" fill="#f1edf9"/><text x="1028" y="932" text-anchor="middle" class="boxh">Model endpoints</text>
+<text x="656" y="985" class="small">OpenAlex · Crossref · Semantic Scholar · Europe PMC · arXiv · GROBID</text>
+<text x="1238" y="879" class="k">RESEARCH OUTPUTS &amp; GOVERNANCE</text>
+<rect x="1238" y="902" width="220" height="48" rx="9" fill="#edf1ff"/><text x="1348" y="932" text-anchor="middle" class="boxh">Artifact volume</text>
+<rect x="1476" y="902" width="212" height="48" rx="9" fill="#eaf5f1"/><text x="1582" y="932" text-anchor="middle" class="boxh">Human approval</text>
+<text x="1238" y="985" class="small">Markdown · LaTeX · BibTeX · ledgers · audit · manifests</text>
+
+<text x="82" y="1080" class="small">ARGUMENTUM is research workflow infrastructure. It does not replace source verification, statistical review, ethics oversight, or human peer review.</text>
+</svg>

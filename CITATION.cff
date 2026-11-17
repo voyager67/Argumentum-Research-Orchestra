@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use ARGUMENTUM, cite the software version and repository commit you actually used."
+title: "ARGUMENTUM Research Engine"
+version: 1.0.0
+type: software
+abstract: >-
+  A self-hosted, researcher-controlled multi-agent research workspace for scholarly
+  literature discovery, evidence synthesis, methodological critique, manuscript
+  development, project/run management, and reproducibility artifacts.
+license: Apache-2.0
+keywords:
+  - academic research
+  - literature review
+  - evidence synthesis
+  - research methods
+  - multi-agent systems
+  - reproducible research
