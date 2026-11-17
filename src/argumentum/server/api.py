@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib,hmac,json,os,re,secrets,shutil,tempfile,uuid
 from collections.abc import Generator
+from dataclasses import dataclass
 from datetime import datetime,timezone
 from pathlib import Path
 from fastapi import Depends,FastAPI,File,Form,HTTPException,Query,UploadFile
@@ -32,7 +33,6 @@ def _token_digest(value:str)->str:
     return hashlib.sha256(value.encode()).hexdigest()
 
 def create_app(api_token:str|None=None)->FastAPI:
-    from dataclasses import dataclass as _unused
     test_token=api_token
     workspace_token=os.getenv("ARGUMENTUM_API_TOKEN","")
     admin_token=os.getenv("ARGUMENTUM_ADMIN_TOKEN","")
