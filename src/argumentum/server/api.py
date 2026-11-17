@@ -278,6 +278,87 @@ def create_app(api_token:str|None=None)->FastAPI:
         if row is None:raise HTTPException(404,"Credential not found")
         if p.role=="admin" and row.role in {"owner","admin"}:raise HTTPException(403,"Admins cannot revoke owner/admin credentials")
         row.is_active=False;session.commit();return {"revoked":True}
+
+    @app.post("/api/v1/experiments", response_model=ExperimentAccepted, status_code=202)
+    def submit_experiment(payload: ExperimentExecutionRequest, p: Principal = Depends(principal_dep)) -> ExperimentAccepted:
+        roles(p, "owner", "admin")
+        if p.tenant_id is None or payload.human_approved is not True:
+            raise HTTPException(403, "Workspace owner/admin and explicit human approval required")
+        root = data_dir / "sandbox"
+        folders = [root / name for name in ("inbox", "processing", "results")]
+        if root.is_symlink() or any(folder.is_symlink() for folder in folders):
+            raise HTTPException(409, "Sandbox storage cannot be a symbolic link")
+        for folder in folders:
+            folder.mkdir(parents=True, exist_ok=True, mode=0o700)
+            os.chmod(folder, 0o700)
+        pending = 0
+        for folder in folders[:2]:
+            for path in folder.glob("*.json"):
+                if path.is_symlink() or not path.is_file() or path.stat().st_size > 65536:
+                    continue
+                try:
+                    pending += json.loads(path.read_text(encoding="utf-8")).get("tenant_id") == p.tenant_id
+                except (OSError, ValueError, json.JSONDecodeError):
+                    continue
+        if pending >= 5:
+            raise HTTPException(429, "Workspace experiment queue limit reached")
+        experiment_id = str(uuid.uuid4())
+        submitted_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        record = {
+            "experiment_id": experiment_id, "tenant_id": p.tenant_id, "requested_by": p.credential_id,
+            "purpose": payload.purpose, "code": payload.code, "timeout_seconds": payload.timeout_seconds,
+            "human_approved": True, "submitted_at": submitted_at,
+        }
+        target = folders[0] / f"{experiment_id}.json"
+        temporary = folders[0] / f".{experiment_id}.{secrets.token_hex(8)}.tmp"
+        try:
+            temporary.write_text(json.dumps(record), encoding="utf-8")
+            os.chmod(temporary, 0o600)
+            os.replace(temporary, target)
+        except OSError as exc:
+            temporary.unlink(missing_ok=True)
+            raise HTTPException(503, "Experiment queue is not writable") from exc
+        return ExperimentAccepted(experiment_id=experiment_id, status="queued",
+                                  status_url=f"/api/v1/experiments/{experiment_id}", approval_recorded=True)
+
+    @app.get("/api/v1/experiments/{experiment_id}", response_model=ExperimentStatus)
+    def get_experiment(experiment_id: str, p: Principal = Depends(principal_dep)) -> ExperimentStatus:
+        try:
+            canonical_id = str(uuid.UUID(experiment_id))
+        except ValueError as exc:
+            raise HTTPException(404, "Experiment not found") from exc
+        root = data_dir / "sandbox"
+        if root.is_symlink() or any((root / folder).is_symlink() for folder in ("results", "processing", "inbox")):
+            raise HTTPException(404, "Experiment not found")
+        locations = [(root / "results" / f"{canonical_id}.json", "result"),
+                     (root / "processing" / f"{canonical_id}.json", "processing"),
+                     (root / "inbox" / f"{canonical_id}.json", "queued")]
+        record = None
+        inferred = "queued"
+        for path, state in locations:
+            if path.is_symlink():
+                continue
+            if path.is_file():
+                try:
+                    if path.stat().st_size > 131072:
+                        raise ValueError("status file too large")
+                    record = json.loads(path.read_text(encoding="utf-8"))
+                    inferred = state
+                    break
+                except (OSError, ValueError, json.JSONDecodeError) as exc:
+                    raise HTTPException(503, "Experiment status unavailable") from exc
+        if record is None or (not p.platform_admin and record.get("tenant_id") != p.tenant_id):
+            raise HTTPException(404, "Experiment not found")
+        state = record.get("status", "running" if inferred == "processing" else inferred)
+        if state not in {"queued", "running", "succeeded", "failed", "blocked"}:
+            state = "blocked"
+        return ExperimentStatus(
+            experiment_id=canonical_id, status=state, purpose=str(record.get("purpose", ""))[:500],
+            submitted_at=record.get("submitted_at"), finished_at=record.get("finished_at"),
+            exit_code=record.get("exit_code"), elapsed_seconds=record.get("elapsed_seconds"),
+            stdout=str(record.get("stdout", ""))[:16384], stderr=str(record.get("stderr", ""))[:16384],
+            isolation=record.get("isolation"),
+        )
     return app
 
 app=create_app()
