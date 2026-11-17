@@ -86,9 +86,6 @@ def _postgres_check() -> str:
 def _redis_check() -> str:
     from redis import Redis
 
-    from argumentum.config import Settings
-
-    settings = Settings.from_env()
     client = Redis.from_url(os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0"), socket_connect_timeout=5, socket_timeout=5)
     try:
         if client.ping() is not True:
