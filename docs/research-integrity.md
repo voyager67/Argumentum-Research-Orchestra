@@ -1,5 +1,11 @@
 # Research integrity, provenance, and limitations
 
+<p align="center">
+  <img src="assets/argumentum-evidence-integrity.png" alt="ARGUMENTUM evidence traceability and research integrity workflow" width="100%">
+</p>
+
+The ledger rows shown are synthetic examples for illustration; they are not retrieved papers or real citations.
+
 ## Intended use
 
 Argumentum helps organize the early and middle stages of a research workflow. It can propose questions, search phrases, a literature shortlist, an evidence map, methodological questions, a manuscript structure, and critical review questions. Every output is provisional.
