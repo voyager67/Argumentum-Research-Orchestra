@@ -19,7 +19,7 @@ This record distinguishes local checks that were actually executed from integrat
 | Compose YAML syntax | Passed | YAML parsing performed for deployment files. It does not prove Docker Compose validity or successful container startup. |
 | UI JavaScript syntax | Passed | Shipped inline application script extracted and checked with Node.js `--check`. |
 | UI / project administration contract | Passed | Browser application source and API endpoint contracts tested; visual preview uses clearly labelled synthetic data. |
-| README / release visuals | Passed | Local README links checked; SVG diagrams parsed; PNG, GIF, and MP4 assets included. The workflow animation is conceptual, not a live recording. |
+| README / documentation visuals | Passed | README and documentation image paths checked; SVG diagrams parsed; the four PNG assets and architecture SVG are present. The lifecycle graphic is a static diagram. |
 | Deployment preflight | Unit tests passed | Safe reporting, secret/token redaction, bounded external checks, and status handling exercised with test doubles. No live probes are claimed. |
 | Wheel build / isolated install | Passed | Wheel rebuilt from the latest source, installed to an isolated target, and version, CLI entry point, and packaged UI checked. |
 | Release archive integrity | Passed | ZIP integrity and source-file inclusion checks performed; cache, `.env`, generated run outputs, and nested build metadata excluded. |
@@ -36,7 +36,7 @@ The source implements four full-pipeline harnesses. The common workflow contract
 | CrewAI Flow | Passed using a Flow/listener-compatible test double | Skipped locally because `crewai` is not installed |
 | Microsoft Agent Framework | Passed using a WorkflowBuilder/executor-compatible test double | Skipped locally because `agent_framework` is not installed |
 
-CI includes separate jobs which install each optional extra and execute both the individual-agent and full-pipeline test modules. Those results are not yet observed until the repository is pushed and the workflow completes. Framework-native stage checkpoint persistence is not connected to PostgreSQL job recovery; an RQ retry can restart at the first research stage.
+GitHub Actions separately installs each optional framework extra and exercises the individual-agent and full-pipeline test modules. Those integrations passed in final CI run #68. Framework-native stage checkpoint persistence is not connected to PostgreSQL job recovery; an RQ retry can restart at the first research stage.
 
 ## Ten skipped tests
 
@@ -59,9 +59,9 @@ The three open Dependabot updates reviewed for this release were rebased onto th
 
 All three pull requests were merged into `main`. The final dependency constraints are `redis>=5,<9` and `rq>=2,<4` in both the `server` and `dev` extras. No GitHub Release or version tag was created.
 
-## GitHub Actions — final merged main passed (18 November 2026)
+## GitHub Actions — final main passed (18 November 2026)
 
-[Final run #67](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253622793) completed successfully on commit `3bca9db4d4d777404cc65219d2d88f2d8abe99bc`. All ten jobs passed: Python 3.11/3.12/3.13/3.15 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose configuration and Docker image builds; and the end-to-end Docker Compose smoke test.
+[Final run #68](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253953020) completed successfully on commit `0847df4636ec08eec917af74abbb908f608af4d1`. All ten jobs passed: Python 3.11/3.12/3.13/3.15 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose configuration and Docker image builds; and the end-to-end Docker Compose smoke test.
 
 The Compose smoke test built and started the API, PostgreSQL, Redis, worker and reconciler, submitted an offline research run, and verified the completed run and required artifacts. The dependency integration job exercised redis-py 8.1.0 with RQ 3.0.0.
 
@@ -80,7 +80,7 @@ The successful CI run verifies the repository's automated software checks on Git
 
 ## Required operator validation before institutional production use
 
-1. Keep the successful [final CI run](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253622793) as the baseline and require a green workflow after subsequent code changes.
+1. Keep the successful [final CI run](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253953020) as the baseline and require a green workflow after subsequent code changes.
 2. Run the Compose stack on the intended Linux host, including model serving and optional document-extraction profiles.
 3. Test `bwrap` namespace creation and the no-network sandbox boundary with benign test cases before enabling experiment execution; conduct an independent threat review.
 4. Test the actual model endpoint with representative prompt sizes and structured outputs; measure memory and throughput on the selected hardware.
