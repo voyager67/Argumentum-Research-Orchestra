@@ -47,34 +47,25 @@ CI includes separate jobs which install each optional extra and execute both the
 - Three individual-agent framework tests: optional dependencies are not installed locally.
 - Three full-pipeline framework tests: optional dependencies are not installed locally.
 
-## Remote pull-request checks reviewed — 17–18 November 2026
+## Dependency pull requests merged and verified — 18 November 2026
 
-These checks ran on Dependabot branches, not on the current `main` commit. They are diagnostic evidence, not a passing release build.
+The three open Dependabot updates reviewed for this release were rebased onto the current `main`, tested, and merged. The combined dependency set is now exercised together in CI.
 
-| Pull request | Proposed change | Observed checks | Recommendation |
-|---|---|---|---|
-| [#3 — Python 3.15](https://github.com/voyager67/Argumentum-Research-engine/pull/3) | Changes both Docker bases from Python 3.12-slim to 3.15-slim. | Python 3.11–3.13 test jobs, optional framework jobs, live Postgres/Redis/RQ integration, Compose configuration, and both image builds passed. The Compose smoke test failed while API/worker/reconciler mounted and initialized the shared data volume concurrently (`/data/runs` already existed). The CI Python test matrix did not test Python 3.15 itself. | Defer; not required for 1.0.0. Re-test Python 3.15 explicitly before adopting it. |
-| [#5 — RQ 3.x](https://github.com/voyager67/Argumentum-Research-engine/pull/5) | Widens RQ from `<3` to `<4`, allowing RQ 3.x. | No workflow run was returned for this PR branch during the audit. RQ 3 includes breaking API changes. | Do not merge until RQ 3 compatibility tests pass; keep the existing `<3` bound for 1.0.0. |
-| [#6 — redis-py 8.x](https://github.com/voyager67/Argumentum-Research-engine/pull/6) | Widens redis-py from `<7` to `<9`, allowing redis-py 8.x. | The live Postgres/Redis/RQ integration job passed with redis-py 8.1.0 and Redis server 7.2.17. Python test jobs and the Compose smoke test failed because the PR head's stale `api.py` lacked the `dataclass` import; current `main` contains that import. | Rebase onto current `main` and run the full suite before considering it. It is not necessary for 1.0.0. |
+| Pull request | Merged change | Verification |
+|---|---|---|
+| [#3 — Python 3.15](https://github.com/voyager67/Argumentum-Research-engine/pull/3) | Updated both Docker images to `python:3.15-slim`; added Python 3.15 to the CI matrix and package classifiers. | Python 3.11, 3.12, 3.13 and 3.15 test jobs passed. Both Docker images built, Compose configuration validated, and the end-to-end Compose smoke test passed. |
+| [#5 — RQ 3.x](https://github.com/voyager67/Argumentum-Research-engine/pull/5) | Widened the RQ dependency bound to `rq>=2,<4`. | CI installed **RQ 3.0.0**. Python tests, live PostgreSQL/Redis/RQ integration, framework adapters and Compose smoke test passed. |
+| [#6 — redis-py 8.x](https://github.com/voyager67/Argumentum-Research-engine/pull/6) | Widened redis-py to `redis>=5,<9`. | Combined CI installed **redis-py 8.1.0 + RQ 3.0.0**. Live PostgreSQL/Redis/RQ integration and the full Compose smoke test passed, along with the Python 3.15 matrix. |
 
-The #3 and #6 smoke-test logs also exposed a service-startup race: background services could mount the shared application volume before the API completed initial database migration and volume setup. Compose now makes the worker and reconciler wait for the API health check. A fresh Actions run on current `main` is still required to verify this fix.
+All three pull requests were merged into `main`. The final dependency constraints are `redis>=5,<9` and `rq>=2,<4` in both the `server` and `dev` extras. No GitHub Release or version tag was created.
 
-## GitHub Actions — current main passed (18 November 2026)
+## GitHub Actions — final merged main passed (18 November 2026)
 
-[Run #40](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44250409213) completed successfully on commit `5bf38a44a74ca8eb23e7f51b6dfaff1a07313360`. All nine jobs passed: Python 3.11/3.12/3.13 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose validation and Docker image builds; and the Docker Compose smoke test.
+[Final run #67](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253622793) completed successfully on commit `3bca9db4d4d777404cc65219d2d88f2d8abe99bc`. All ten jobs passed: Python 3.11/3.12/3.13/3.15 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose configuration and Docker image builds; and the end-to-end Docker Compose smoke test.
 
-The smoke test built and started the API, database, Redis, worker and reconciler, then submitted an offline research run and verified its resulting artifacts. This confirms the Compose startup-ordering change on that commit.
+The Compose smoke test built and started the API, PostgreSQL, Redis, worker and reconciler, submitted an offline research run, and verified the completed run and required artifacts. The dependency integration job exercised redis-py 8.1.0 with RQ 3.0.0.
 
-The GitHub Actions workflow is configured to run:
-
-1. Python tests and Ruff lint across Python 3.11, 3.12, and 3.13.
-2. JavaScript syntax validation using Node.js 22.
-3. Separate live optional-framework installations and full-pipeline executions.
-4. PostgreSQL and Redis service-container integration tests.
-5. Docker Compose configuration validation and Docker image builds.
-6. Docker Compose smoke test that submits and polls an offline research run.
-
-This run is a successful CI result for the commit linked above. Any subsequent source change should be assessed using its own workflow run.
+Use this CI workflow as a merge gate for future source changes. A green CI run confirms the automated checks listed above; it is not a production deployment, security certification, or scientific-quality assessment.
 
 ## Not verified / not covered by CI
 
@@ -89,7 +80,7 @@ The successful CI run verifies the repository's automated software checks on Git
 
 ## Required operator validation before institutional production use
 
-1. Run the prepared GitHub Actions workflow and retain successful test, lint, service integration, and Docker smoke-test logs.
+1. Keep the successful [final CI run](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253622793) as the baseline and require a green workflow after subsequent code changes.
 2. Run the Compose stack on the intended Linux host, including model serving and optional document-extraction profiles.
 3. Test `bwrap` namespace creation and the no-network sandbox boundary with benign test cases before enabling experiment execution; conduct an independent threat review.
 4. Test the actual model endpoint with representative prompt sizes and structured outputs; measure memory and throughput on the selected hardware.
