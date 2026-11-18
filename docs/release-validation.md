@@ -36,7 +36,7 @@ The source implements four full-pipeline harnesses. The common workflow contract
 | CrewAI Flow | Passed using a Flow/listener-compatible test double | Skipped locally because `crewai` is not installed |
 | Microsoft Agent Framework | Passed using a WorkflowBuilder/executor-compatible test double | Skipped locally because `agent_framework` is not installed |
 
-GitHub Actions separately installs each optional framework extra and exercises the individual-agent and full-pipeline test modules. Those integrations passed in final CI run #68. Framework-native stage checkpoint persistence is not connected to PostgreSQL job recovery; an RQ retry can restart at the first research stage.
+GitHub Actions separately installs each optional framework extra and exercises the individual-agent and full-pipeline test modules. Those integrations passed in final CI run #71. Framework-native stage checkpoint persistence is not connected to PostgreSQL job recovery; an RQ retry can restart at the first research stage.
 
 ## Ten skipped tests
 
@@ -61,7 +61,7 @@ All three pull requests were merged into `main`. The final dependency constraint
 
 ## GitHub Actions — final main passed (18 November 2026)
 
-[Final run #68](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253953020) completed successfully on commit `0847df4636ec08eec917af74abbb908f608af4d1`. All ten jobs passed: Python 3.11/3.12/3.13/3.15 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose configuration and Docker image builds; and the end-to-end Docker Compose smoke test.
+[Final run #71](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44264023028) completed successfully on commit `b8f2b301a205cbd852032d8168b5ce5fa2fc707c`. All ten jobs passed: Python 3.11/3.12/3.13/3.15 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose configuration and Docker image builds; and the end-to-end Docker Compose smoke test.
 
 The Compose smoke test built and started the API, PostgreSQL, Redis, worker and reconciler, submitted an offline research run, and verified the completed run and required artifacts. The dependency integration job exercised redis-py 8.1.0 with RQ 3.0.0.
 
@@ -80,7 +80,7 @@ The successful CI run verifies the repository's automated software checks on Git
 
 ## Required operator validation before institutional production use
 
-1. Keep the successful [final CI run](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44253953020) as the baseline and require a green workflow after subsequent code changes.
+1. Keep the successful [final CI run](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44264023028) as the baseline and require a green workflow after subsequent code changes.
 2. Run the Compose stack on the intended Linux host, including model serving and optional document-extraction profiles.
 3. Test `bwrap` namespace creation and the no-network sandbox boundary with benign test cases before enabling experiment execution; conduct an independent threat review.
 4. Test the actual model endpoint with representative prompt sizes and structured outputs; measure memory and throughput on the selected hardware.
