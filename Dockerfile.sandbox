@@ -1,6 +1,6 @@
 # Minimal opt-in experiment execution image. It contains no API credentials, database
 # client, model provider, or network listener. Research code is run inside bubblewrap.
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
