@@ -31,7 +31,7 @@ ARGUMENTUM Research Engine is delivered as one complete source baseline. The rel
 - Retrieval benchmark utility for researcher-labelled JSONL gold sets: Precision@k, Recall@k, MRR@k, nDCG@k, and Hit Rate@k.
 - Ruff configuration, pinned development dependency, local lint target, pre-commit hooks, and CI lint workflow.
 - Browser UI JavaScript syntax check, optional framework integration jobs, PostgreSQL/Redis/RQ integration job, Compose configuration/build checks, and Docker Compose offline smoke-test job.
-- Original architecture illustration, workspace preview using clearly labelled synthetic records, and 13-stage workflow explainer GIF/MP4.
+- Original architecture illustration, a clearly labelled synthetic workspace preview, and a 13-stage research-lifecycle diagram.
 - Apache-2.0 licensing, contribution/security policies, citation metadata, researcher-focused README, and release validation record.
 
 No empirical scientific-quality benchmark, human peer review, production deployment certification, or measured accuracy improvement is claimed. See `docs/release-validation.md` for the exact local verification scope, skipped integrations, and operator-side checks.
