@@ -47,7 +47,19 @@ CI includes separate jobs which install each optional extra and execute both the
 - Three individual-agent framework tests: optional dependencies are not installed locally.
 - Three full-pipeline framework tests: optional dependencies are not installed locally.
 
-## CI checks configured but not observed
+## Remote pull-request checks reviewed — 17–18 November 2026
+
+These checks ran on Dependabot branches, not on the current `main` commit. They are diagnostic evidence, not a passing release build.
+
+| Pull request | Proposed change | Observed checks | Recommendation |
+|---|---|---|---|
+| [#3 — Python 3.15](https://github.com/voyager67/Argumentum-Research-engine/pull/3) | Changes both Docker bases from Python 3.12-slim to 3.15-slim. | Python 3.11–3.13 test jobs, optional framework jobs, live Postgres/Redis/RQ integration, Compose configuration, and both image builds passed. The Compose smoke test failed while API/worker/reconciler mounted and initialized the shared data volume concurrently (`/data/runs` already existed). The CI Python test matrix did not test Python 3.15 itself. | Defer; not required for 1.0.0. Re-test Python 3.15 explicitly before adopting it. |
+| [#5 — RQ 3.x](https://github.com/voyager67/Argumentum-Research-engine/pull/5) | Widens RQ from `<3` to `<4`, allowing RQ 3.x. | No workflow run was returned for this PR branch during the audit. RQ 3 includes breaking API changes. | Do not merge until RQ 3 compatibility tests pass; keep the existing `<3` bound for 1.0.0. |
+| [#6 — redis-py 8.x](https://github.com/voyager67/Argumentum-Research-engine/pull/6) | Widens redis-py from `<7` to `<9`, allowing redis-py 8.x. | The live Postgres/Redis/RQ integration job passed with redis-py 8.1.0 and Redis server 7.2.17. Python test jobs and the Compose smoke test failed because the PR head's stale `api.py` lacked the `dataclass` import; current `main` contains that import. | Rebase onto current `main` and run the full suite before considering it. It is not necessary for 1.0.0. |
+
+The #3 and #6 smoke-test logs also exposed a service-startup race: background services could mount the shared application volume before the API completed initial database migration and volume setup. Compose now makes the worker and reconciler wait for the API health check. A fresh Actions run on current `main` is still required to verify this fix.
+
+## CI checks configured but current-main result needs confirmation
 
 The GitHub Actions workflow is configured to run:
 
