@@ -2,6 +2,12 @@
 
 This guide deploys the Argumentum API, researcher UI, background worker, tenant-aware credentials, PostgreSQL, Redis/RQ, and periodic queue reconciler on infrastructure you control. The optional model, GROBID, and experiment services are separate deployment profiles.
 
+<p align="center">
+  <img src="assets/argumentum-workspace.png" alt="Illustrative ARGUMENTUM researcher workspace layout" width="100%">
+</p>
+
+This is a conceptual workspace preview, not a live deployment screenshot or real research data.
+
 ## Services
 
 | Service | Purpose | Persistent data |
@@ -16,7 +22,7 @@ This guide deploys the Argumentum API, researcher UI, background worker, tenant-
 | `documents` profile | Optional GROBID PDF-to-TEI extraction | Image-managed model data |
 | `sandbox` profile | Optional human-approved Python experiment runner | Private experiment queue/results in application data volume |
 
-The API, worker, database, and Redis use a private Compose network. PostgreSQL, Redis, model servers, and GROBID are not published to the host by default. Only the API is bound to `127.0.0.1` unless you intentionally change it. Keep the application data volume private; it contains uploaded research material, run outputs, credentials metadata, and experiment queue records.
+The API, worker, database, and Redis use a private Compose network. Compose waits for the API to become healthy, including database migration startup, before starting the worker and reconciler. This avoids racing background services against initial schema and shared-volume setup. PostgreSQL, Redis, model servers, and GROBID are not published to the host by default. Only the API is bound to `127.0.0.1` unless you intentionally change it. Keep the application data volume private; it contains uploaded research material, run outputs, credentials metadata, and experiment queue records.
 
 ## Prerequisites
 
