@@ -11,6 +11,10 @@ A self-hosted, multi-agent research workflow for **Master's students, doctoral r
 </div>
 
 <p align="center">
+  <img src="docs/assets/argumentum-hero.png" alt="ARGUMENTUM Research Engine — evidence-driven multi-agent research infrastructure" width="100%">
+</p>
+
+<p align="center">
   <img src="docs/assets/argumentum-architecture.svg" alt="ARGUMENTUM self-hosted research architecture" width="100%">
 </p>
 
@@ -37,6 +41,10 @@ It does **not** claim to discover scientific truth, replace reading primary lite
 ## The research lifecycle
 
 The workflow contains 13 ordered stages. The same stage contract is used by each selectable pipeline harness.
+
+<p align="center">
+  <img src="docs/assets/argumentum-research-lifecycle.png" alt="The 13 ordered ARGUMENTUM research workflow stages, from material preparation through artifact export" width="100%">
+</p>
 
 | # | Stage | Main output |
 |---:|---|---|
@@ -101,10 +109,10 @@ Optional integrations are installed separately. Harness contract tests do not im
 The included browser workspace at `/ui` provides project organization, run history, artifact retrieval, retry for eligible failed runs, workspace credentials and platform tenant administration.
 
 <p align="center">
-  <img src="docs/assets/research-workspace-preview.svg" alt="Illustrative ARGUMENTUM researcher workspace" width="100%">
+  <img src="docs/assets/argumentum-workspace.png" alt="Illustrative ARGUMENTUM researcher workspace preview" width="100%">
 </p>
 
-The preview is an illustrative product view. It is not a screenshot of a live deployment or real research data.
+The preview is an illustrative product mockup based on the current workspace structure. It is not a screenshot of a live deployment and contains no real user or research data.
 
 ## Outputs for academic work
 
@@ -205,6 +213,12 @@ argumentum benchmark-retrieval --input examples/retrieval-gold.jsonl --k 5
 Retrieval metrics evaluate ranking against a supplied gold set; they do not establish source entailment, scientific correctness, methodological validity or publication quality.
 
 ## Research integrity and safety boundaries
+
+<p align="center">
+  <img src="docs/assets/argumentum-evidence-integrity.png" alt="Evidence traceability from screened sources to a cited draft and human review, with explicit integrity boundaries" width="100%">
+</p>
+
+The ledger rows in this illustration are synthetic examples, not actual retrieved sources or citations.
 
 - Retrieved titles, abstracts, PDFs and user documents are untrusted data, not agent instructions.
 - The manuscript may cite only identifiers in the Literature Scout's screened catalogue.
