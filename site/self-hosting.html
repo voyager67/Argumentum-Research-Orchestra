@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a31">
+  <meta name="description" content="Install and self-host the ARGUMENTUM researcher workspace with Docker Compose.">
+  <title>Self-hosting — ARGUMENTUM</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="ARGUMENTUM home"><span class="brand-mark" aria-hidden="true">A</span><span><span class="brand-name">ARGUMENTUM</span><span class="brand-sub">RESEARCH ENGINE</span></span></a>
+    <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="integrity.html">Research integrity</a><a href="self-hosting.html" aria-current="page">Self-hosting</a><a class="nav-cta" href="https://github.com/voyager67/Argumentum-Research-engine" target="_blank" rel="noopener noreferrer">View repository ↗</a></nav>
+  </header>
+  <main class="container">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Self-hosting</p>
+    <section class="page-hero"><div class="kicker">Run it on your infrastructure</div><h1>Your workspace. Your model endpoint. Your data boundary.</h1><p>ARGUMENTUM is designed for local and researcher-controlled deployment. The GitHub Pages website is static documentation; the interactive workspace runs from the self-hosted FastAPI service.</p></section>
+
+    <section class="section prose">
+      <div class="section-head"><div class="kicker">Requirements</div><h2>Prepare your environment.</h2></div>
+      <ul>
+        <li>Python 3.11 or later for package installation and command-line tools.</li>
+        <li>Docker Engine and Docker Compose for the full service stack.</li>
+        <li>A compatible model endpoint and credentials for non-demo research runs.</li>
+        <li>Unique secrets and a suitable access policy before exposing the service to a network.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div class="kicker">Quick start</div><h2>Install the project.</h2><p class="lead">The following commands mirror the repository's installation and self-hosting instructions.</p></div>
+      <div class="code">git clone https://github.com/voyager67/Argumentum-Research-engine.git
+cd Argumentum-Research-engine
+
+python -m venv .venv
+# macOS / Linux:
+source .venv/bin/activate
+# Windows PowerShell:
+# .venv\Scripts\Activate.ps1
+
+python -m pip install -e ".[dev]"
+argumentum doctor
+argumentum agents</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div class="kicker">Run the service stack</div><h2>Configure, then start.</h2></div>
+      <div class="code">cp .env.example .env
+# Set unique secrets and model settings in .env first.
+python scripts/init-selfhost.py
+docker compose --profile ollama up --build -d</div>
+      <div class="split">
+        <article class="panel"><h3>Researcher workspace</h3><p>After the service starts, open <code>http://127.0.0.1:8080/ui</code> in your browser and connect with a workspace bearer token.</p></article>
+        <article class="panel"><h3>API documentation</h3><p>The API schema is available at <code>http://127.0.0.1:8080/docs</code> on the local service.</p></article>
+      </div>
+    </section>
+
+    <section class="section prose">
+      <div class="section-head"><div class="kicker">Before production</div><h2>Keep deployment boundaries explicit.</h2></div>
+      <ul>
+        <li>Change all default and generated secrets appropriately; never commit <code>.env</code> or credentials.</li>
+        <li>Use TLS, authentication, rate limiting, backups and an institutional access policy before network exposure.</li>
+        <li>Review model-provider privacy terms and the handling rules for researcher-supplied documents.</li>
+        <li>Validate sandbox isolation before enabling the optional experiment worker.</li>
+        <li>Verify sources and generated claims independently before scholarly use.</li>
+      </ul>
+      <div class="note">The public GitHub Pages site does not contain the API, database, queue, model server or authenticated workspace. Those components must be deployed separately using the repository instructions.</div>
+    </section>
+
+    <div class="callout"><div><strong>Need the complete deployment guide?</strong><p>The repository documents environment variables, optional GPU/vLLM and GROBID overlays, reverse proxy setup and service hardening.</p></div><a class="button" href="https://github.com/voyager67/Argumentum-Research-engine/blob/main/docs/self-hosting.md" target="_blank" rel="noopener noreferrer">Open self-hosting guide ↗</a></div>
+  </main>
+  <footer class="footer"><div class="container footer-inner"><p>ARGUMENTUM Research Engine · Apache-2.0</p><div class="footer-links"><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="integrity.html">Research integrity</a><a href="https://github.com/voyager67/Argumentum-Research-engine">GitHub</a></div></div></footer>
+</body>
+</html>
