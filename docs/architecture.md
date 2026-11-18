@@ -1,10 +1,18 @@
 # Architecture and design decisions
 
+<p align="center">
+  <img src="assets/argumentum-architecture.svg" alt="ARGUMENTUM self-hosted research architecture" width="100%">
+</p>
+
 ## System boundary
 
 Argumentum is a researcher-controlled research workflow with ten specialist roles, five capability packs, read-only scholarly metadata adapters, optional self-hosted GROBID PDF extraction, and a self-hosted service mode. The research protocol is an explicit 13-stage sequence. The selected pipeline harness owns the complete stage graph: Native, LangGraph, CrewAI Flow, or Microsoft Agent Framework. It does not claim autonomous scientific discovery, systematic-review completeness, full-text crawling, automatic statistical inference, plagiarism detection, or publication certification.
 
 ## Pipeline stages
+
+<p align="center">
+  <img src="assets/argumentum-research-lifecycle.png" alt="ARGUMENTUM 13-stage research lifecycle" width="100%">
+</p>
 
 The same thirteen ordered stages are represented in every full-pipeline harness:
 
