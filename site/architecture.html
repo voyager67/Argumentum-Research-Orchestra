@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a31">
+  <meta name="description" content="Explore the ARGUMENTUM research workflow, orchestration layers, services and artifacts.">
+  <title>Architecture — ARGUMENTUM</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="ARGUMENTUM home"><span class="brand-mark" aria-hidden="true">A</span><span><span class="brand-name">ARGUMENTUM</span><span class="brand-sub">RESEARCH ENGINE</span></span></a>
+    <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="architecture.html" aria-current="page">Architecture</a><a href="integrity.html">Research integrity</a><a href="self-hosting.html">Self-hosting</a><a class="nav-cta" href="https://github.com/voyager67/Argumentum-Research-engine" target="_blank" rel="noopener noreferrer">View repository ↗</a></nav>
+  </header>
+  <main class="container">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Architecture</p>
+    <section class="page-hero"><div class="kicker">System design</div><h1>One research protocol. Pluggable execution.</h1><p>ARGUMENTUM separates the research lifecycle and artifact contracts from the orchestration framework used to execute each stage. This keeps the process inspectable while allowing different workflow runtimes.</p></section>
+
+    <section class="section">
+      <div class="section-head"><div class="kicker">System layers</div><h2>From researcher input to persistent artifacts.</h2><p class="lead">A self-hosted service coordinates the work and stores the outputs in a researcher-controlled environment.</p></div>
+      <div class="pipeline">
+        <div class="pipeline-item"><div><strong>Researcher workspace</strong><span>Projects, runs, workspace credentials, artifact retrieval and status.</span></div></div>
+        <div class="pipeline-item"><div><strong>FastAPI service</strong><span>Authenticated API, tenant boundaries, request validation and orchestration entry points.</span></div></div>
+        <div class="pipeline-item"><div><strong>Research protocol</strong><span>Question framing, 13 ordered stages, role contracts and artifact schemas.</span></div></div>
+        <div class="pipeline-item"><div><strong>Workflow harness</strong><span>Native, LangGraph, CrewAI Flow or Microsoft Agent Framework execution.</span></div></div>
+        <div class="pipeline-item"><div><strong>Research resources</strong><span>Scholarly catalogues, optional document extraction and compatible model endpoints.</span></div></div>
+        <div class="pipeline-item"><div><strong>Persistence and queue</strong><span>PostgreSQL for records, Redis/RQ for queued work and persistent artifact storage.</span></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div class="kicker">Execution sequence</div><h2>Specialists contribute to a shared evidence trail.</h2></div>
+      <div class="cards">
+        <article class="card"><div class="card-mark">01</div><h3>Frame and discover</h3><p>The Research Director defines scope and search strategy. The Literature Scout gathers and screens metadata from configured catalogues.</p></article>
+        <article class="card"><div class="card-mark">02</div><h3>Analyse and challenge</h3><p>The Evidence Analyst maps claims to sources. Methodology and data roles challenge design, limitations and inference boundaries.</p></article>
+        <article class="card"><div class="card-mark">03</div><h3>Synthesise and review</h3><p>Synthesis and writing roles prepare a draft. An adversarial reviewer flags weaknesses before revision and integrity checks.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div class="kicker">Artifact contract</div><h2>Outputs designed to be inspected.</h2></div>
+      <div class="split">
+        <article class="panel"><h3>Evidence and provenance</h3><p><code>sources.json</code>, <code>evidence_ledger.md</code>, <code>evidence_ledger.json</code>, <code>research_charter.json</code> and <code>run_manifest.json</code>.</p></article>
+        <article class="panel"><h3>Methods and synthesis</h3><p><code>methodology_review.json</code>, <code>synthesis_map.json</code> and <code>figure_and_data_review.json</code>.</p></article>
+        <article class="panel"><h3>Scholarly drafts</h3><p><code>manuscript.md</code>, <code>manuscript.tex</code>, <code>references.bib</code> and <code>peer_review.md</code>.</p></article>
+        <article class="panel"><h3>Integrity and disclosure</h3><p><code>integrity_report.json</code> and <code>AI_USE_DISCLOSURE.txt</code>, both intended for author inspection and review.</p></article>
+      </div>
+    </section>
+
+    <div class="callout"><div><strong>Want the detailed architecture?</strong><p>Read the version-controlled design notes, including data flow and deployment boundaries.</p></div><a class="button" href="https://github.com/voyager67/Argumentum-Research-engine/blob/main/docs/architecture.md" target="_blank" rel="noopener noreferrer">Open architecture notes ↗</a></div>
+  </main>
+  <footer class="footer"><div class="container footer-inner"><p>ARGUMENTUM Research Engine · Apache-2.0</p><div class="footer-links"><a href="index.html">Overview</a><a href="integrity.html">Research integrity</a><a href="self-hosting.html">Self-hosting</a><a href="https://github.com/voyager67/Argumentum-Research-engine">GitHub</a></div></div></footer>
+</body>
+</html>
