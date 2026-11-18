@@ -6,7 +6,7 @@
 
 A self-hosted, multi-agent research workflow for **Master's students, doctoral researchers, postdoctoral fellows, faculty, professors, research groups and academic laboratories**.
 
-[Architecture](docs/architecture.md) · [Self-hosting](docs/self-hosting.md) · [Research integrity](docs/research-integrity.md) · [Evaluation](docs/evaluation.md) · [Security](SECURITY.md)
+[Project website](https://voyager67.github.io/Argumentum-Research-engine/) · [Architecture](docs/architecture.md) · [Self-hosting](docs/self-hosting.md) · [Research integrity](docs/research-integrity.md) · [Evaluation](docs/evaluation.md) · [Security](SECURITY.md)
 
 </div>
 
@@ -106,7 +106,7 @@ Optional integrations are installed separately. Harness contract tests do not im
 
 ## Researcher workspace
 
-The included browser workspace at `/ui` provides project organization, run history, artifact retrieval, retry for eligible failed runs, workspace credentials and platform tenant administration.
+The included browser workspace at `/ui` provides project organization, run history, artifact retrieval, retry for eligible failed runs, workspace credentials and platform tenant administration. The public [GitHub Pages website](https://voyager67.github.io/Argumentum-Research-engine/) is static project documentation; the interactive workspace and its `/api/v1` endpoints run on your self-hosted FastAPI service.
 
 <p align="center">
   <img src="docs/assets/argumentum-workspace.png" alt="Illustrative ARGUMENTUM researcher workspace preview" width="100%">
