@@ -59,7 +59,11 @@ These checks ran on Dependabot branches, not on the current `main` commit. They 
 
 The #3 and #6 smoke-test logs also exposed a service-startup race: background services could mount the shared application volume before the API completed initial database migration and volume setup. Compose now makes the worker and reconciler wait for the API health check. A fresh Actions run on current `main` is still required to verify this fix.
 
-## CI checks configured but current-main result needs confirmation
+## GitHub Actions — current main passed (18 November 2026)
+
+[Run #40](https://github.com/voyager67/Argumentum-Research-engine/actions/runs/44250409213) completed successfully on commit `5bf38a44a74ca8eb23e7f51b6dfaff1a07313360`. All nine jobs passed: Python 3.11/3.12/3.13 tests with Ruff and UI JavaScript validation; LangGraph, CrewAI and Microsoft Agent Framework integration; live PostgreSQL/Redis/RQ integration; self-hosted Compose validation and Docker image builds; and the Docker Compose smoke test.
+
+The smoke test built and started the API, database, Redis, worker and reconciler, then submitted an offline research run and verified its resulting artifacts. This confirms the Compose startup-ordering change on that commit.
 
 The GitHub Actions workflow is configured to run:
 
@@ -70,19 +74,15 @@ The GitHub Actions workflow is configured to run:
 5. Docker Compose configuration validation and Docker image builds.
 6. Docker Compose smoke test that submits and polls an offline research run.
 
-A configured workflow is not evidence of a passing workflow. A repository owner must push this source to GitHub and review the run logs.
+This run is a successful CI result for the commit linked above. Any subsequent source change should be assessed using its own workflow run.
 
-## Not verified in this environment
+## Not verified / not covered by CI
 
-This build environment does not provide Docker Engine/Compose, a live PostgreSQL server, Redis server, Ruff executable, GPU, or running Ollama/vLLM/GROBID instances. It has no configured credentials for live scholarly providers. Therefore this task did not verify:
+The successful CI run verifies the repository's automated software checks on GitHub-hosted runners and disposable services. It is not a production deployment or a security certification. The following remain outside the verified scope:
 
-- Docker image builds, container startup, network topology, volume permissions, Compose health checks, or sandbox runtime isolation.
-- Live PostgreSQL migration/runtime behavior, real Redis/RQ queue dispatch, broker outages, scheduler timing, duplicate delivery under restart, worker crash/recovery, or multi-replica behavior.
 - Actual Ollama/vLLM inference, model structured-output compatibility, GPU memory, throughput, or model quality.
 - Actual GROBID extraction or current OpenAlex, Crossref, Semantic Scholar, Europe PMC, and arXiv connectivity/rate-limit behavior.
-- Ruff lint output or remote GitHub Actions results.
-- Actual installed LangGraph, CrewAI Flow, or Microsoft Agent Framework runtime execution in this environment; only their workflow contracts were exercised with test doubles.
-- Framework-specific durable node checkpoint/restart integration with PostgreSQL/RQ.
+- Broker outage recovery, scheduler timing, duplicate delivery under restart, worker crash recovery, multi-replica behavior, and framework-specific durable node checkpoint/restart integration with PostgreSQL/RQ.
 - OIDC/SAML SSO, MFA, SCIM, PostgreSQL row-level security, tenant quotas, external identity-provider integration, or formal security certification.
 - Sandbox security certification or execution of untrusted user code under real production Docker/Linux host constraints.
 - User-labelled retrieval/scientific-quality benchmark results, expert assessment of claim support, human peer review, or measured improvements in scientific accuracy.
