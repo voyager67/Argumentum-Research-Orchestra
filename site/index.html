@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a31">
+  <meta name="description" content="ARGUMENTUM is self-hosted, multi-agent research infrastructure for evidence-linked literature discovery, synthesis, methodological critique and reproducible scholarly workflows.">
+  <title>ARGUMENTUM — Research with evidence</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="ARGUMENTUM home">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span><span class="brand-name">ARGUMENTUM</span><span class="brand-sub">RESEARCH ENGINE</span></span>
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html" aria-current="page">Overview</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="integrity.html">Research integrity</a>
+      <a href="self-hosting.html">Self-hosting</a>
+      <a class="nav-cta" href="https://github.com/voyager67/Argumentum-Research-engine" target="_blank" rel="noopener noreferrer">View repository ↗</a>
+    </nav>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Self-hosted · Multi-agent · Evidence-linked</div>
+        <h1>Research with evidence. Keep judgement human.</h1>
+        <p>ARGUMENTUM coordinates a structured research lifecycle—from a defined question and scholarly discovery to evidence mapping, methodological critique and inspectable research artifacts.</p>
+        <div class="actions">
+          <a class="button button-light" href="self-hosting.html">Get started <span aria-hidden="true">→</span></a>
+          <a class="button button-outline" href="architecture.html">Explore the architecture</a>
+        </div>
+      </div>
+      <div class="hero-flow" aria-label="Research workflow overview">
+        <div class="flow-label">From question to reviewable artifacts</div>
+        <div class="flow-step"><span class="flow-num">01</span> Research question &amp; scope</div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="flow-step"><span class="flow-num">02</span> Literature discovery &amp; screening</div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="flow-step"><span class="flow-num">03</span> Evidence ledger &amp; methods review</div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="flow-step"><span class="flow-num">04</span> Synthesis, manuscript &amp; audit</div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Project at a glance">
+      <div class="stat"><strong>13</strong><span>Ordered workflow stages</span></div>
+      <div class="stat"><strong>10</strong><span>Specialist agent roles</span></div>
+      <div class="stat"><strong>5</strong><span>Scholarly metadata catalogues</span></div>
+      <div class="stat"><strong>1</strong><span>Researcher-governed process</span></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="kicker">Why ARGUMENTUM</div>
+        <h2>More than an AI writing interface.</h2>
+        <p class="lead">The system is designed around research process, evidence provenance and critical review—not just generating fluent text.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><div class="card-mark">01</div><h3>Traceable evidence</h3><p>Screen retrieved sources, preserve identifiers and connect draft claims to a structured evidence ledger.</p></article>
+        <article class="card"><div class="card-mark">02</div><h3>Methodological challenge</h3><p>Review design fit, sampling, measurement, validity threats, missing methods and inference boundaries.</p></article>
+        <article class="card"><div class="card-mark">03</div><h3>Reproducible outputs</h3><p>Keep research charters, source registers, synthesis maps, manuscripts, bibliography files and run manifests.</p></article>
+        <article class="card"><div class="card-mark">04</div><h3>Composable orchestration</h3><p>Choose the native workflow, LangGraph, CrewAI Flow or Microsoft Agent Framework harness.</p></article>
+        <article class="card"><div class="card-mark">05</div><h3>Researcher-owned infrastructure</h3><p>Run locally or self-host with PostgreSQL, Redis/RQ and compatible model endpoints.</p></article>
+        <article class="card"><div class="card-mark">06</div><h3>Human accountability</h3><p>AI outputs remain drafts and review aids. Researchers verify sources, claims, methods and submission requirements.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="kicker">The research lifecycle</div>
+        <h2>Thirteen explicit stages. One inspectable workflow.</h2>
+        <p class="lead">Each stage has a defined purpose and a corresponding artifact or review output.</p>
+      </div>
+      <div class="stage-grid">
+        <div class="stage"><b>01</b><span>Prepare researcher materials</span></div>
+        <div class="stage"><b>02</b><span>Research direction and charter</span></div>
+        <div class="stage"><b>03</b><span>Literature discovery</span></div>
+        <div class="stage"><b>04</b><span>Literature screening</span></div>
+        <div class="stage"><b>05</b><span>Evidence analysis</span></div>
+        <div class="stage"><b>06</b><span>Methodology review</span></div>
+        <div class="stage"><b>07</b><span>Research synthesis</span></div>
+        <div class="stage"><b>08</b><span>Data and figure review</span></div>
+        <div class="stage"><b>09</b><span>Manuscript composition</span></div>
+        <div class="stage"><b>10</b><span>Adversarial peer review</span></div>
+        <div class="stage"><b>11</b><span>Manuscript revision</span></div>
+        <div class="stage"><b>12</b><span>Research integrity checks</span></div>
+        <div class="stage"><b>13</b><span>Artifact export</span></div>
+      </div>
+    </section>
+
+    <section class="section split">
+      <article class="panel">
+        <div class="kicker">Research resources</div>
+        <h2>Work with scholarly catalogues.</h2>
+        <p>Connectors include OpenAlex, Crossref, Semantic Scholar, Europe PMC and arXiv. Optional GROBID support extracts scholarly document structure from researcher-supplied PDFs.</p>
+      </article>
+      <article class="panel">
+        <div class="kicker">Model flexibility</div>
+        <h2>Use your model endpoint.</h2>
+        <p>ARGUMENTUM supports OpenAI-compatible chat-completions endpoints, including local serving options such as Ollama and vLLM. Model-specific JSON compatibility should be checked before a run.</p>
+      </article>
+    </section>
+
+    <section class="callout">
+      <div><strong>Ready to run ARGUMENTUM?</strong><p>The interactive researcher workspace is served by the self-hosted FastAPI service at <code>/ui</code>. This GitHub Pages site is the public project website, not the backend workspace.</p></div>
+      <a class="button" href="self-hosting.html">Set up your workspace →</a>
+    </section>
+  </main>
+  <footer class="footer"><div class="container footer-inner"><p>© ARGUMENTUM Research Engine · Apache-2.0</p><div class="footer-links"><a href="architecture.html">Architecture</a><a href="integrity.html">Research integrity</a><a href="self-hosting.html">Self-hosting</a><a href="https://github.com/voyager67/Argumentum-Research-engine" target="_blank" rel="noopener noreferrer">GitHub</a></div></div></footer>
+</body>
+</html>
