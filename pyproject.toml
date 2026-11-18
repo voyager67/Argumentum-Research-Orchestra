@@ -46,7 +46,10 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-ra --strict-markers"
+markers = [
+  "integration: tests requiring explicitly enabled live services or external APIs",
+]
 
 [tool.ruff]
 line-length = 120

@@ -15,7 +15,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system --gid 10001 argumentum \
     && useradd --system --uid 10001 --gid argumentum --home-dir /app --shell /usr/sbin/nologin argumentum \
-    && mkdir -p /data/runs \
+    && mkdir -p /data/runs /data/sandbox \
     && chown -R argumentum:argumentum /app /data
 
 COPY pyproject.toml README.md LICENSE ./
