@@ -1,8 +1,10 @@
-# ARGUMENTUM Research Engine
+# Argumentation Research Orchestrator
 
 <div align="center">
 
 **Research orchestration for scholars. Evidence traceability for every draft. Infrastructure you can run yourself.**
+
+A self-hosted, multi-agent research infrastructure orchestrator that automates scholarly literature discovery, evidence synthesis, methodological critique, reproducible manuscript workflows, and human-governed experiments.
 
 A self-hosted, multi-agent research workflow for **Master's students, doctoral researchers, postdoctoral fellows, faculty, professors, research groups and academic laboratories**.
 
