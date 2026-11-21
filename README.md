@@ -1,4 +1,4 @@
-# Argumentation Research Orchestrator
+# Argumentation Research Orchestra
 
 <div align="center">
 
